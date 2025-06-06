@@ -1,8 +1,8 @@
-import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/home/presentation/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/item_list.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +13,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool foldersOpen = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,43 +75,61 @@ class _HomePageState extends State<HomePage> {
                           }),
                           Divider(color: button),
                           Row(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    foldersOpen = !foldersOpen;
-                                  });
-                                },
-                                child:
-                                    foldersOpen
-                                        ? Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: iconbg,
-                                        )
-                                        : Icon(
-                                          Icons.keyboard_arrow_up_rounded,
-                                          color: iconbg,
-                                        ),
-                              ),
-                              const SizedBox(width: 10),
                               Text(
-                                "Folders",
+                                "Tags",
                                 style: TextStyle(
                                   color: iconbg,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              TreeView.simple(
-                                builder: (context, item) {
-                                  return ListTile(
-                                    title: Text("Item ${item.level} - ${item.key}"),
-                                  );
+                              Spacer(),
+                              IconButton(
+                                onPressed: () {
+                                  popUpMenu(context);
                                 },
-                                tree: TreeNode.root()..add(TreeNode(data: "a",key: "0")),
+                                icon: Icon(Icons.add, color: iconbg),
+                                hoverColor: button,
                               ),
                             ],
                           ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: double.maxFinite,
+                            height: 40,
+                            child: SearchBar(
+                              hintText: "Search Tags",
+                              hintStyle: WidgetStatePropertyAll(
+                                TextStyle(
+                                  color: iconbg,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              textStyle: WidgetStatePropertyAll(
+                                TextStyle(
+                                  color: iconbg,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              backgroundColor: WidgetStatePropertyAll(button),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              leading: Icon(Icons.search, color: iconbg),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          // FilterChip(
+                          //   label: Text("label"),
+                          //   onSelected: (value) {},
+                          // ),
                         ],
                       ),
                     ),

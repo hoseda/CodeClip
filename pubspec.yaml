@@ -37,8 +37,6 @@ dependencies:
   code_text_field: ^1.1.0
   highlight: ^0.7.0
   flutter_highlight: ^0.7.0
-  sidebarx: ^0.17.1
-  animated_tree_view: ^2.3.0
   flutter_acrylic: ^1.1.4
 
   window_size:
