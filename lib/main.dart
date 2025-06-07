@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/features/home/presentation/home_page.dart';
 import 'package:window_size/window_size.dart';
 
@@ -11,7 +12,7 @@ void main() {
     setWindowMinSize(const Size(1280, 720));
     setWindowMaxSize(const Size(1280, 900));
   }
-  runApp(const App());
+  runApp(ProviderScope(child: const App()));
 }
 
 class App extends StatelessWidget {

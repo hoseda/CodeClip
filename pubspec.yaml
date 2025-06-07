@@ -44,6 +44,7 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
   hovering: ^1.0.4
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
