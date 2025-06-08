@@ -51,10 +51,6 @@ Future<void> popUpMenu(BuildContext context) async {
                         if (value == null || value.trim().isEmpty) {
                           return "Tag name cannot be empty.";
                         }
-
-                        if (value.trim().length < 2) {
-                          return "must be a least 2 character.";
-                        }
                         return null;
                       },
                       maxLength: 15,
@@ -132,7 +128,7 @@ Future<void> popUpMenu(BuildContext context) async {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedColor,
-                  foregroundColor: _getContrastingTextColor(selectedColor),
+                  foregroundColor: getContrastingTextColor(selectedColor),
                 ),
                 child: Text("OK"),
               ),
@@ -181,7 +177,7 @@ void _addNewTag(WidgetRef ref, String title, Color color) {
   ref.read(tagListStateProvider.notifier).state = [...currentTags, newTag];
 }
 
-Color _getContrastingTextColor(Color backgroundColor) {
+Color getContrastingTextColor(Color backgroundColor) {
   final luminance = backgroundColor.computeLuminance();
   return luminance > 0.5 ? Colors.black : Colors.white;
 }

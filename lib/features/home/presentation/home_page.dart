@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/home/model/tag_model.dart';
+import 'package:snippet_code/features/home/presentation/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item_list.dart';
 import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
@@ -127,10 +129,62 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          // FilterChip(
-                          //   label: Text("label"),
-                          //   onSelected: (value) {},
-                          // ),
+                          Wrap(
+                            children: [
+                              generateTag(
+                                TagModel(
+                                  id: "1",
+                                  title: "flutter",
+                                  color: Colors.amberAccent,
+                                ),
+                                onDelete: () {
+                                  print("Deleted.");
+                                },
+                                onTap: () {
+                                  print("taped.");
+                                },
+                              ),
+                              generateTag(
+                                TagModel(
+                                  id: "1",
+                                  title: "csharp",
+                                  color: Colors.teal,
+                                ),
+                                onDelete: () {
+                                  print("Deleted.");
+                                },
+                                onTap: () {
+                                  print("taped.");
+                                },
+                              ),
+                               generateTag(
+                                TagModel(
+                                  id: "1",
+                                  title: "csharp cpp",
+                                  color: Colors.redAccent,
+                                ),
+                                onDelete: () {
+                                  print("Deleted.");
+                                },
+                                onTap: () {
+                                  print("taped.");
+                                },
+                              ),
+                               generateTag(
+                                TagModel(
+                                  id: "1",
+                                  title: "py",
+                                  color: Colors.purple,
+                                ),
+                                onDelete: () {
+                                  print("Deleted.");
+                                },
+                                onTap: () {
+                                  print("taped.");
+                                },
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
