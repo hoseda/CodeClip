@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
-import 'package:snippet_code/features/home/presentation/generate_tag.dart';
+import 'package:snippet_code/features/home/presentation/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item_list.dart';
+import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-
-
+class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,6 +84,12 @@ class _HomePageState extends State<HomePage> {
                               Spacer(),
                               IconButton(
                                 onPressed: () {
+                                  ref
+                                      .read(tagTitleStateProvider.notifier)
+                                      .state = "";
+                                  ref
+                                      .read(tagColorStateProvider.notifier)
+                                      .state = iconbg;
                                   popUpMenu(context);
                                 },
                                 icon: Icon(Icons.add, color: iconbg),
