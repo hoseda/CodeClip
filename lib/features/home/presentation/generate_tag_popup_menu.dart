@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
+import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
 
@@ -43,7 +44,7 @@ Future<void> popUpMenu(BuildContext context) async {
                   children: [
                     TextFormField(
                       controller: controller,
-                      onFieldSubmitted: (value) {
+                      onChanged: (value) {
                         ref.read(tagTitleStateProvider.notifier).state =
                             value.trim();
                       },
@@ -118,6 +119,7 @@ Future<void> popUpMenu(BuildContext context) async {
                       SnackBar(
                         content: Text(
                           "Tag '$currentTitle' created successfully!",
+                          style: TextStyle(color: getContrastingTextColor(selectedColor)),
                         ),
                         width: 300,
                         backgroundColor: selectedColor,
@@ -177,7 +179,3 @@ void _addNewTag(WidgetRef ref, String title, Color color) {
   ref.read(tagListStateProvider.notifier).state = [...currentTags, newTag];
 }
 
-Color getContrastingTextColor(Color backgroundColor) {
-  final luminance = backgroundColor.computeLuminance();
-  return luminance > 0.5 ? Colors.black : Colors.white;
-}
