@@ -44,7 +44,6 @@ Widget generateTag(
 
 Widget generateTagList(WidgetRef ref, String input) {
   final tagList = ref.watch(searchInTagsProvider(input));
-  print(tagList);
   return input.isEmpty ? tagList.isEmpty
       ? Center(child: Text("No Tags here,", style: TextStyle(color: iconbg)))
       : Wrap(
