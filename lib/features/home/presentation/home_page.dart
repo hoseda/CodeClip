@@ -21,7 +21,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: backgound,
       body: SafeArea(
@@ -138,7 +137,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          generateTagList(ref, searchInput),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: generateTagList(ref, searchInput),
+                            ),
+                          ),
                         ],
                       ),
                     ),

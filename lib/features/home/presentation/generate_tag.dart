@@ -44,9 +44,17 @@ Widget generateTag(
 
 Widget generateTagList(WidgetRef ref, String input) {
   final tagList = ref.watch(searchInTagsProvider(input));
-  return input.isEmpty ? tagList.isEmpty
-      ? Center(child: Text("No Tags here,", style: TextStyle(color: iconbg)))
-      : Wrap(
+  var errorWidget = Center();
+  if (input.isEmpty && tagList.isEmpty) {
+    errorWidget = Center(
+      child: Text("No Tags here,", style: TextStyle(color: iconbg)),
+    );
+  }
+  if (input.isNotEmpty && tagList.isEmpty) {
+    errorWidget = Center(child: Text("No Results Found.", style: TextStyle(color: iconbg)));
+  }
+  return tagList.isNotEmpty
+      ? Wrap(
         runSpacing: 11,
         spacing: 11,
         children:
@@ -72,5 +80,6 @@ Widget generateTagList(WidgetRef ref, String input) {
                   ),
                 )
                 .toList(),
-      ) : Center(child: Text("No Results Found.", style: TextStyle(color: iconbg)));
+      )
+      : errorWidget;
 }
