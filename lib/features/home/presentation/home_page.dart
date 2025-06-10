@@ -16,8 +16,12 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  final SearchController controller = SearchController();
+  String searchInput = "";
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: backgound,
       body: SafeArea(
@@ -103,7 +107,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                             width: double.maxFinite,
                             height: 40,
                             child: SearchBar(
+                              controller: controller,
                               hintText: "Search Tags",
+                              onChanged: (value) {
+                                setState(() {
+                                  searchInput = value;
+                                });
+                              },
                               hintStyle: WidgetStatePropertyAll(
                                 TextStyle(
                                   color: iconbg,
@@ -128,7 +138,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          generateTagList(ref),
+                          generateTagList(ref, searchInput),
                         ],
                       ),
                     ),

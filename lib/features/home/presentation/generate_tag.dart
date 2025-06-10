@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
@@ -41,31 +42,36 @@ Widget generateTag(
   );
 }
 
-Widget generateTagList(WidgetRef ref) {
-  final tagList = ref.watch(tagListStateProvider);
-  return Wrap(
-    runSpacing: 11,
-    spacing: 11,
-    children:
-        tagList
-            .map(
-              (tag) => generateTag(
-                tag,
-                onDelete: () {
-                  final updatedTag =
-                      tagList.where((t) => t.id != tag.id).toList();
-                  ref.read(tagListStateProvider.notifier).state = updatedTag;
-                },
-                onTap: () {
-                  final newTag = tag.copyWith(isSelected: !tag.isSelected);
-                  final idx = tagList.indexOf(tag);
-                  final updatedList = List<TagModel>.from(tagList);
-                  updatedList[idx] = newTag;
-                  ref.read(tagListStateProvider.notifier).state = updatedList;
-                },
-                isSelected: tag.isSelected,
-              ),
-            )
-            .toList(),
-  );
+Widget generateTagList(WidgetRef ref, String input) {
+  final tagList = ref.watch(searchInTagsProvider(input));
+  print(tagList);
+  return input.isEmpty ? tagList.isEmpty
+      ? Center(child: Text("No Tags here,", style: TextStyle(color: iconbg)))
+      : Wrap(
+        runSpacing: 11,
+        spacing: 11,
+        children:
+            tagList
+                .map(
+                  (tag) => generateTag(
+                    tag,
+                    onDelete: () {
+                      final updatedTag =
+                          tagList.where((t) => t.id != tag.id).toList();
+                      ref.read(tagListStateProvider.notifier).state =
+                          updatedTag;
+                    },
+                    onTap: () {
+                      final newTag = tag.copyWith(isSelected: !tag.isSelected);
+                      final idx = tagList.indexOf(tag);
+                      final updatedList = List<TagModel>.from(tagList);
+                      updatedList[idx] = newTag;
+                      ref.read(tagListStateProvider.notifier).state =
+                          updatedList;
+                    },
+                    isSelected: tag.isSelected,
+                  ),
+                )
+                .toList(),
+      ) : Center(child: Text("No Results Found.", style: TextStyle(color: iconbg)));
 }

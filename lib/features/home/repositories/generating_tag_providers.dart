@@ -11,9 +11,21 @@ final tagColorStateProvider = StateProvider<Color>((ref) {
   return iconbg;
 });
 
-
 final tagListStateProvider = StateProvider<List<TagModel>>((ref) {
   return [];
 });
 
+final searchInTagsProvider = Provider.family<List<TagModel>, String>((
+  ref,
+  input,
+) {
+  final tagList = ref.watch(tagListStateProvider);
 
+  if (input.isEmpty) {
+    return tagList;
+  }
+
+  return tagList.where((tag) {
+    return tag.title.toLowerCase().contains(input.toLowerCase());
+  }).toList();
+});
