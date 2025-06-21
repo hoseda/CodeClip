@@ -35,4 +35,18 @@ class AppDatabase extends _$AppDatabase {
       return NativeDatabase(file);
     });
   }
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+      },
+
+      onUpgrade: (m, from, to) async{
+        //todo : add logic of migration here.
+        if (from < 2) {}
+      },
+    );
+  }
 }

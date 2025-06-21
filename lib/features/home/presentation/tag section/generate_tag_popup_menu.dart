@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
-import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
+import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 Future<void> popUpMenu(BuildContext context) async {
   TextEditingController controller = TextEditingController();

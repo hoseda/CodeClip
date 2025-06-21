@@ -6,7 +6,7 @@ import 'package:snippet_code/core/constants/menu_names.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item%20section/item_list.dart';
-import 'package:snippet_code/features/home/repositories/generating_tag_providers.dart';
+import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
