@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item%20section/item_list.dart';
@@ -23,6 +24,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgound,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          getCodePopUpMenu(context);
+        },
+        backgroundColor: button,
+        splashColor: iconbg,
+        child: Icon(Icons.add, color: iconbg),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -146,7 +155,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ],
                       ),
                     ),
-                    VerticalDivider(color: button,indent: 8,endIndent: 8,),
+                    VerticalDivider(color: button, indent: 8, endIndent: 8),
                     Flexible(
                       flex: 2,
                       child: Column(
