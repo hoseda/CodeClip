@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
-import 'package:snippet_code/features/home/model/tag_model.dart';
+import 'package:snippet_code/features/home/presentation/main%20section/tag_drop_down_menu.dart';
+import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 Future<void> getCodePopUpMenu(BuildContext context) async {
-  TextEditingController controller_name = TextEditingController();
-  TextEditingController controller_code = TextEditingController();
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerCode = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -14,6 +15,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
     builder:
         (context) => Consumer(
           builder: (context, ref, child) {
+            final tags = ref.watch(tagListStateProvider);
             return AlertDialog(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,7 +47,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextFormField(
-                          controller: controller_name,
+                          controller: controllerName,
                           maxLength: 100,
                           style: TextStyle(color: iconbg),
                           decoration: InputDecoration(
@@ -68,7 +70,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          controller: controller_code,
+                          controller: controllerCode,
                           minLines: 8,
                           maxLines: 100,
                           showCursor: true,
@@ -107,6 +109,10 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: TagDropDownMenu(tagList: tags),
+                            ),
                           ],
                         ),
                       ],
@@ -114,6 +120,19 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                   ),
                 ),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: iconbg, fontSize: 16),
+                  ),
+                ),
+                ElevatedButton(onPressed: () {}, child: Text("Add")),
+              ],
+              actionsAlignment: MainAxisAlignment.spaceBetween,
             );
           },
         ),
