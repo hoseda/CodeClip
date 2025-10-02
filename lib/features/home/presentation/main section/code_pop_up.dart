@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
-import 'package:snippet_code/features/home/presentation/main%20section/tag_drop_down_menu.dart';
+import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
+import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 Future<void> getCodePopUpMenu(BuildContext context) async {
@@ -16,6 +17,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
         (context) => Consumer(
           builder: (context, ref, child) {
             final tags = ref.watch(tagListStateProvider);
+            final selectedTags = ref.watch(selectedTagsProvider);
             return AlertDialog(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,22 +100,41 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Tag : ",
-                              style: TextStyle(
-                                color: iconbg,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        Text(
+                          "Tags : ",
+                          style: TextStyle(
+                            color: iconbg,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children:
+                                  tags
+                                      .map(
+                                        (tag) => generateTag(
+                                          tag,
+                                          isSelected: selectedTags.contains(
+                                            tag,
+                                          ),
+                                          onTap: () {
+                                            if (selectedTags.contains(tag)) {
+                                              removeSelectedTags(ref, tag);
+                                            } else {
+                                              addToSelectedTags(ref, tag);
+                                            }
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: TagDropDownMenu(tagList: tags),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
@@ -124,6 +145,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    clearSelectedTagsSet(ref);
                   },
                   child: Text(
                     "Cancel",
