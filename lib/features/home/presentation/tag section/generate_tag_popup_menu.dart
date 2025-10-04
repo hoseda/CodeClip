@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/utils/get_constrasting_color.dart';
+import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
+import 'package:snippet_code/features/home/repositories/tag_section/tag_db_repo.dart';
 
 Future<void> popUpMenu(BuildContext context) async {
   TextEditingController controller = TextEditingController();
@@ -119,7 +121,9 @@ Future<void> popUpMenu(BuildContext context) async {
                       SnackBar(
                         content: Text(
                           "Tag '$currentTitle' created successfully!",
-                          style: TextStyle(color: getContrastingTextColor(selectedColor)),
+                          style: TextStyle(
+                            color: getContrastingTextColor(selectedColor),
+                          ),
                         ),
                         width: 300,
                         backgroundColor: selectedColor,
@@ -169,13 +173,12 @@ Widget createColorfullCircles(Color color, double size, bool isSelected) {
 }
 
 void _addNewTag(WidgetRef ref, String title, Color color) {
-  final currentTags = ref.read(tagListStateProvider);
   final newTag = TagModel(
-    id: DateTime.now().millisecondsSinceEpoch.toString(),
+    id: DateTime.now().millisecondsSinceEpoch.toInt(),
     title: title,
     color: color,
   );
 
-  ref.read(tagListStateProvider.notifier).state = [...currentTags, newTag];
+  final db = ref.read(dataBaseProvider);
+  TagDatabase(db).addNewItem(newTag);
 }
-

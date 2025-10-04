@@ -3,8 +3,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+Color colorFormHex(String hex) {
+  hex = hex.replaceAll("#", "");
+  if (hex.length == 6) hex = 'FF$hex';
+  return Color(int.parse(hex, radix: 16));
+}
+
+String colorToHex(Color color) {
+  return '#${color.value.toInt().toRadixString(16).padLeft(8, '0').toUpperCase()}';
+}
+
 class TagModel {
-  final String id;
+  final int id;
   final String title;
   final Color color;
   final bool isSelected;
@@ -19,12 +29,7 @@ class TagModel {
   @override
   String toString() => 'TagModel(id: $id, title: $title, color: $color)';
 
-  TagModel copyWith({
-    String? id,
-    String? title,
-    Color? color,
-    bool? isSelected,
-  }) {
+  TagModel copyWith({int? id, String? title, Color? color, bool? isSelected}) {
     return TagModel(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -37,21 +42,22 @@ class TagModel {
     return <String, dynamic>{
       'id': id,
       'title': title,
-      'color': color.value,
+      'color': colorToHex(color),
       'isSelected': isSelected,
     };
   }
 
   factory TagModel.fromMap(Map<String, dynamic> map) {
     return TagModel(
-      id: map['id'] as String,
+      id: map['id'] as int,
       title: map['title'] as String,
-      color: Color(map['color'] as int),
+      color: colorFormHex(map['color']),
       isSelected: map['isSelected'] as bool,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory TagModel.fromJson(String source) => TagModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TagModel.fromJson(String source) =>
+      TagModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final asyncTags = ref.watch(tagListStreamProvider);
     return Scaffold(
       backgroundColor: backgound,
       floatingActionButton: FloatingActionButton(

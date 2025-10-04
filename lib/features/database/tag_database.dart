@@ -43,7 +43,7 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
       },
 
-      onUpgrade: (m, from, to) async{
+      onUpgrade: (m, from, to) async {
         //todo : add logic of migration here.
         if (from < 2) {}
       },

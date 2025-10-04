@@ -110,32 +110,33 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                         ),
                         const SizedBox(height: 10),
                         Expanded(
-                          child: SingleChildScrollView(
-                            physics: BouncingScrollPhysics(),
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children:
-                                  tags
-                                      .map(
-                                        (tag) => generateTag(
-                                          tag,
-                                          isSelected: selectedTags.contains(
+                          
+                            child: SingleChildScrollView(
+                              physics: BouncingScrollPhysics(),
+                              child: Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children:
+                                    tags
+                                        .map(
+                                          (tag) => generateTag(
                                             tag,
+                                            isSelected: selectedTags.contains(
+                                              tag,
+                                            ),
+                                            onTap: () {
+                                              if (selectedTags.contains(tag)) {
+                                                removeSelectedTags(ref, tag);
+                                              } else {
+                                                addToSelectedTags(ref, tag);
+                                              }
+                                            },
                                           ),
-                                          onTap: () {
-                                            if (selectedTags.contains(tag)) {
-                                              removeSelectedTags(ref, tag);
-                                            } else {
-                                              addToSelectedTags(ref, tag);
-                                            }
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
+                                        )
+                                        .toList(),
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
