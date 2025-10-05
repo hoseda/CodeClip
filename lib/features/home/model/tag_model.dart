@@ -52,7 +52,7 @@ class TagModel {
       id: map['id'] as int,
       title: map['title'] as String,
       color: colorFormHex(map['color']),
-      isSelected: map['isSelected'] as bool,
+      isSelected: map['isSelected'] as bool? ?? false,
     );
   }
 

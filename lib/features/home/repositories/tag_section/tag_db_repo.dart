@@ -22,7 +22,7 @@ class TagDatabase extends DatabaseRepository<TagModel> {
           TagTableCompanion.insert(
             id: Value(item.id),
             title: item.title,
-            color: item.color.toString(),
+            color: colorToHex(item.color),
           ),
         );
   }
@@ -41,7 +41,7 @@ class TagDatabase extends DatabaseRepository<TagModel> {
       ..where((t) => t.id.equals(item.id))).write(
       TagTableCompanion(
         title: Value(item.title),
-        color: Value(item.color.value.toString()),
+        color: Value(colorToHex(item.color)),
       ),
     );
   }
@@ -50,12 +50,9 @@ class TagDatabase extends DatabaseRepository<TagModel> {
   Future<List<TagModel>> readItems() async {
     //extract data from database
     final tagsData = await database.select(database.tagTable).get();
-    return tagsData
-        .map(
-          (t) =>
-              TagModel(id: t.id, title: t.title, color: colorFormHex(t.color)),
-        )
-        .toList();
+    return tagsData.map((t) {
+      return TagModel(id: t.id, title: t.title, color: colorFormHex(t.color));
+    }).toList();
   }
 
   @override

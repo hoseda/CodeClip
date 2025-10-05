@@ -12,30 +12,9 @@ final tagColorStateProvider = StateProvider<Color>((ref) {
   return iconbg;
 });
 
+// TODO: DELETE THIS LINE BELOW;
 final tagListStateProvider = StateProvider<List<TagModel>>((ref) {
   return [];
 });
 
-final fetchTagListFromStream = Provider<List<TagModel>>((ref) {
-  ref.listen(tagListStreamProvider, (perv, next) {
-    next.whenData((tags) {
-      ref.read(tagListStateProvider.notifier).state = tags;
-    });
-  });
-  return [];
-});
-
-final searchInTagsProvider = Provider.family<List<TagModel>, String>((
-  ref,
-  input,
-) {
-  final tagList = ref.watch(tagListStateProvider);
-
-  if (input.isEmpty) {
-    return tagList;
-  }
-
-  return tagList.where((tag) {
-    return tag.title.toLowerCase().contains(input.toLowerCase());
-  }).toList();
-});
+final selectedTagIdsProvider = StateProvider<Set<int>>((ref) => {});

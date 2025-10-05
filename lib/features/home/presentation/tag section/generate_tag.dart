@@ -44,51 +44,49 @@ Widget generateTag(
 }
 
 Widget generateTagList(WidgetRef ref, String input) {
-  final tagList = ref.watch(tagDatabaseAllItemsProvider);
-  // var errorWidget = tagList
-  // if (input.isEmpty && tagList.isEmpty) {
-  //   errorWidget = Center(
-  //     child: Text("No Tags here,", style: TextStyle(color: iconbg)),
-  //   );
-  // }
-  // if (input.isNotEmpty && tagList.isEmpty) {
-  //   errorWidget = Center(
-  //     child: Text("No Results Found.", style: TextStyle(color: iconbg)),
-  //   );
-  // }
+  final tagList = ref.watch(tagListStreamProvider);
+  final selectedTags = ref.watch(selectedTagIdsProvider);
   return tagList.when(
-    data:
-        (tags) => Wrap(
-          runSpacing: 11,
-          spacing: 11,
-          children:
-              tags
-                  .map(
-                    (tag) => generateTag(
-                      tag,
-                      onDelete: () {
-                        final updatedTag =
-                            tags.where((t) => t.id != tag.id).toList();
-                        ref.read(tagListStateProvider.notifier).state =
-                            updatedTag;
-                      },
-                      onTap: () {
-                        final newTag = tag.copyWith(
-                          isSelected: !tag.isSelected,
-                        );
-                        final idx = tags.indexOf(tag);
-                        final updatedList = List<TagModel>.from(tags);
-                        updatedList[idx] = newTag;
-                        ref.read(tagListStateProvider.notifier).state =
-                            updatedList;
-                      },
-                      isSelected: tag.isSelected,
-                    ),
+    data: (tags) {
+      print("tags current list lenght ${tags.length}");
+
+      final filteredTags =
+          input.isEmpty
+              ? tags
+              : tags
+                  .where(
+                    (t) => t.title.toLowerCase().contains(input.toLowerCase()),
                   )
-                  .toList(),
-        ),
+                  .toList();
+
+      if (filteredTags.isEmpty) {
+        return Center(
+          child: Text(
+            input.isEmpty ? "No Tags Yet." : "No Results Found.",
+            style: TextStyle(color: iconbg),
+          ),
+        );
+      }
+      return Wrap(
+        runSpacing: 11,
+        spacing: 11,
+        children:
+            filteredTags.map((tag) {
+              final isSelected = selectedTags.contains(tag.id);
+              return generateTag(
+                tag,
+                onDelete: () {
+                  ref.read(deleteTag(tag));
+                },
+                onTap: () {
+                  toggleTagSelection(ref, tag);
+                },
+                isSelected: isSelected,
+              );
+            }).toList(),
+      );
+    },
     error: (error, stackTrace) {
-      print("Errors : $error | Stack : $stackTrace");
       return Text(
         "Errors : $error | Stack : $stackTrace",
         style: TextStyle(color: Colors.red),
@@ -96,4 +94,17 @@ Widget generateTagList(WidgetRef ref, String input) {
     },
     loading: () => const CircularProgressIndicator(),
   );
+}
+
+void toggleTagSelection(WidgetRef ref, TagModel tag) {
+  final selected = ref.read(selectedTagIdsProvider.notifier);
+  final current = {...selected.state};
+
+  if (current.contains(tag.id)) {
+    current.remove(tag.id);
+  } else {
+    current.add(tag.id);
+  }
+
+  selected.state = current;
 }

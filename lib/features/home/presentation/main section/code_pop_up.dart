@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
+import 'package:snippet_code/features/database/database_provider.dart';
+import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
-import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 Future<void> getCodePopUpMenu(BuildContext context) async {
   TextEditingController controllerName = TextEditingController();
@@ -16,8 +17,6 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
     builder:
         (context) => Consumer(
           builder: (context, ref, child) {
-            final tags = ref.watch(tagListStateProvider);
-            final selectedTags = ref.watch(selectedTagsProvider);
             return AlertDialog(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,33 +109,11 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                         ),
                         const SizedBox(height: 10),
                         Expanded(
-                          
-                            child: SingleChildScrollView(
-                              physics: BouncingScrollPhysics(),
-                              child: Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children:
-                                    tags
-                                        .map(
-                                          (tag) => generateTag(
-                                            tag,
-                                            isSelected: selectedTags.contains(
-                                              tag,
-                                            ),
-                                            onTap: () {
-                                              if (selectedTags.contains(tag)) {
-                                                removeSelectedTags(ref, tag);
-                                              } else {
-                                                addToSelectedTags(ref, tag);
-                                              }
-                                            },
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                            ),
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: generateTagListCodePopUp(ref),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -160,4 +137,53 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
           },
         ),
   );
+}
+
+Widget generateTagListCodePopUp(WidgetRef ref) {
+  final tagList = ref.watch(tagListStreamProvider);
+  final selectedTags = ref.watch(selectedTagsCodePopUpProvider);
+  return tagList.when(
+    data: (tags) {
+      if (tags.isEmpty) {
+        return Center(
+          child: Text("No Tags Yet.", style: TextStyle(color: iconbg)),
+        );
+      }
+      return Wrap(
+        runSpacing: 11,
+        spacing: 11,
+        children:
+            tags.map((tag) {
+              final isSelected = selectedTags.contains(tag.id);
+              return generateTag(
+                tag,
+                onTap: () {
+                  toggleTagCodePopUpSelection(ref, tag);
+                },
+                isSelected: isSelected,
+              );
+            }).toList(),
+      );
+    },
+    error: (error, stackTrace) {
+      return Text(
+        "Errors : $error | Stack : $stackTrace",
+        style: TextStyle(color: Colors.red),
+      );
+    },
+    loading: () => const CircularProgressIndicator(),
+  );
+}
+
+void toggleTagCodePopUpSelection(WidgetRef ref, TagModel tag) {
+  final selected = ref.read(selectedTagsCodePopUpProvider.notifier);
+  final current = {...selected.state};
+
+  if (current.contains(tag.id)) {
+    current.remove(tag.id);
+  } else {
+    current.add(tag.id);
+  }
+
+  selected.state = current;
 }

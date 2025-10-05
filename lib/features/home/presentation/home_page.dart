@@ -23,7 +23,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final asyncTags = ref.watch(tagListStreamProvider);
     return Scaffold(
       backgroundColor: backgound,
       floatingActionButton: FloatingActionButton(

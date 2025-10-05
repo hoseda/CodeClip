@@ -18,8 +18,12 @@ final tagDatabaseAllItemsProvider = FutureProvider<List<TagModel>>((ref) {
 });
 
 final tagListStreamProvider = StreamProvider<List<TagModel>>((ref) {
-  final repo = ref.watch(tagDatabaseProvider);
-  return repo.watchAllTags();
+  final db = ref.watch(tagDatabaseProvider);
+  final stream = db.watchAllTags();
+  stream.listen((data) {
+    print('🔥 DB changed! New tags: $data');
+  });
+  return stream;
 });
 
 final addNewTag = Provider.family<void, TagModel>((ref, tag) {
@@ -27,5 +31,9 @@ final addNewTag = Provider.family<void, TagModel>((ref, tag) {
   db.addNewItem(tag);
 });
 
+final deleteTag = Provider.family<void, TagModel>((ref, item) {
+  final db = ref.watch(tagDatabaseProvider);
+  db.deleteItem(item);
+});
 
 // TODO: fix updating ui , merge db with riverpod

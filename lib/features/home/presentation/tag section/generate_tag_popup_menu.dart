@@ -5,7 +5,6 @@ import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
-import 'package:snippet_code/features/home/repositories/tag_section/tag_db_repo.dart';
 
 Future<void> popUpMenu(BuildContext context) async {
   TextEditingController controller = TextEditingController();
@@ -179,6 +178,5 @@ void _addNewTag(WidgetRef ref, String title, Color color) {
     color: color,
   );
 
-  final db = ref.read(dataBaseProvider);
-  TagDatabase(db).addNewItem(newTag);
+  ref.read(addNewTag(newTag));
 }
