@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/core/constants/colors.dart';
+import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
+import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 Future<void> getCodePopUpMenu(BuildContext context) async {
   TextEditingController controllerName = TextEditingController();
@@ -130,13 +133,66 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                     style: TextStyle(color: iconbg, fontSize: 16),
                   ),
                 ),
-                ElevatedButton(onPressed: () {}, child: Text("Add")),
+                ElevatedButton(
+                  onPressed: () {
+                    final currentName = controllerName.text.trim();
+                    final currentCode = controllerCode.text.trim();
+                    final curruntTags = ref.read(selectedTagsCodePopUpProvider);
+                    if (currentName.isNotEmpty &&
+                        currentCode.isNotEmpty &&
+                        formKey.currentState!.validate()) {
+                      _addNewSnippetCode(
+                        ref,
+                        currentName,
+                        currentCode,
+                        curruntTags,
+                      );
+
+                      Navigator.of(context).pop();
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "SnippetCode '$currentName' created successfully!",
+                            style: TextStyle(
+                              color: getContrastingTextColor(primary),
+                            ),
+                          ),
+                          width: 300,
+                          backgroundColor: primary,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("Add"),
+                ),
               ],
               actionsAlignment: MainAxisAlignment.spaceBetween,
             );
           },
         ),
   );
+}
+
+void _addNewSnippetCode(
+  WidgetRef ref,
+  String name,
+  String code,
+  Set<int> tags,
+) {
+  final newSnippetCode = SnippetModel(
+    id: DateTime.now().millisecondsSinceEpoch.toInt(),
+    name: name,
+    code: code,
+    tags: tags,
+  );
+
+  final snippetList = ref.read(snippetListStateProvider);
+  ref.read(snippetListStateProvider.notifier).state = [
+    ...snippetList,
+    newSnippetCode,
+  ];
 }
 
 Widget generateTagListCodePopUp(WidgetRef ref) {

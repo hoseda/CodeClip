@@ -4,6 +4,7 @@ import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
 import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
+import 'package:snippet_code/features/home/presentation/snippet%20section/snippet_section.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item%20section/item_list.dart';
@@ -17,8 +18,10 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  final SearchController controller = SearchController();
-  String searchInput = "";
+  final SearchController tagcontroller = SearchController();
+  final SearchController snippetcontroller = SearchController();
+  String tagSearchInput = "";
+  String snippetSearchInput = "";
 
   @override
   Widget build(BuildContext context) {
@@ -115,11 +118,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                             width: double.maxFinite,
                             height: 40,
                             child: SearchBar(
-                              controller: controller,
+                              controller: tagcontroller,
                               hintText: "Search Tags",
                               onChanged: (value) {
                                 setState(() {
-                                  searchInput = value;
+                                  tagSearchInput = value;
                                 });
                               },
                               hintStyle: WidgetStatePropertyAll(
@@ -149,7 +152,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Expanded(
                             child: SingleChildScrollView(
                               padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: generateTagList(ref, searchInput),
+                              child: generateTagList(ref, tagSearchInput),
                             ),
                           ),
                         ],
@@ -159,12 +162,70 @@ class _HomePageState extends ConsumerState<HomePage> {
                     Flexible(
                       flex: 2,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Expanded(child: Container(color: Colors.amber)),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: Text(
+                              "Snippets",
+                              style: TextStyle(
+                                color: iconbg,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 15,
+                              left: 15,
+                              right: 15,
+                              bottom: 15,
+                            ),
+                            child: SizedBox(
+                              width: double.maxFinite,
+                              height: 45,
+                              child: SearchBar(
+                                controller: snippetcontroller,
+                                hintText: "Search Snippet Code",
+                                onChanged: (value) {
+                                  setState(() {
+                                    snippetSearchInput = value;
+                                  });
+                                },
+                                hintStyle: WidgetStatePropertyAll(
+                                  TextStyle(
+                                    color: iconbg,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                textStyle: WidgetStatePropertyAll(
+                                  TextStyle(
+                                    color: iconbg,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                backgroundColor: WidgetStatePropertyAll(button),
+                                shape: WidgetStatePropertyAll(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                leading: Icon(Icons.search, color: iconbg),
+                              ),
+                            ),
+                          ),
+                          generateSnippetList(ref, snippetSearchInput),
                         ],
                       ),
                     ),
-
+                    VerticalDivider(color: button, indent: 8, endIndent: 8),
                     Flexible(
                       flex: 3,
                       child: Column(
