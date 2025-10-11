@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:highlight/highlight_core.dart';
 import 'package:snippet_code/core/constants/colors.dart';
+import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
@@ -13,11 +15,14 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
           tags.where((tag) => snippet.tags.contains(tag.id)).toList();
       return ListTile(
         title: Text(snippet.name, style: TextStyle(color: iconbg)),
-        trailing: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children:
-              filteredTags.map((t) => generateTagForSnippetCode(t)).toList(),
+        subtitle: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children:
+                filteredTags.map((t) => generateTagForSnippetCode(t)).toList(),
+          ),
         ),
       );
     },
@@ -27,22 +32,14 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
 }
 
 Widget generateTagForSnippetCode(TagModel tag) {
-  return FilterChip(
-    label: Text(
-      tag.title,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-      ),
+  return Chip(
+    label: Text(tag.title),
+    backgroundColor: tag.color,
+    labelStyle: TextStyle(
+      color: getContrastingTextColor(tag.color),
+      fontSize: 12,
     ),
-    onSelected: (v) {},
-    color: WidgetStatePropertyAll(tag.color),
-    selectedColor: tag.color,
-    selected: false,
-    onDeleted: null,
-    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    visualDensity: VisualDensity.compact,
-    side: BorderSide(color: Colors.transparent),
   );
 }
+
+//TODO : use code language detector here.
