@@ -20,9 +20,6 @@ final tagDatabaseAllItemsProvider = FutureProvider<List<TagModel>>((ref) {
 final tagListStreamProvider = StreamProvider<List<TagModel>>((ref) {
   final db = ref.watch(tagDatabaseProvider);
   final stream = db.watchAllTags();
-  stream.listen((data) {
-    print('🔥 DB changed! New tags: $data');
-  });
   return stream;
 });
 

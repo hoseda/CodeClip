@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 
-double LongerLength(List<TagModel> lst) {
+double longerLength(List<TagModel> lst) {
   double d = 0;
   for (var e in lst) {
     if (e.title.length > d) {
       d = e.title.length.toDouble();
     }
   }
-  print(d);
   return d;
 }
 

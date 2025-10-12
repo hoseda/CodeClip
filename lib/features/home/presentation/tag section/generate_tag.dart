@@ -48,8 +48,6 @@ Widget generateTagList(WidgetRef ref, String input) {
   final selectedTags = ref.watch(selectedTagIdsProvider);
   return tagList.when(
     data: (tags) {
-      print("tags current list lenght ${tags.length}");
-
       final filteredTags =
           input.isEmpty
               ? tags
