@@ -8,6 +8,7 @@ import 'package:snippet_code/features/home/presentation/snippet%20section/snippe
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item%20section/item_list.dart';
+import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -29,6 +30,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       backgroundColor: backgound,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          clearSelectedTagsSet(ref);
           getCodePopUpMenu(context);
         },
         backgroundColor: button,

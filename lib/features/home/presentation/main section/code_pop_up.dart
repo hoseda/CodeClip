@@ -159,6 +159,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                             ),
                           ),
                           width: 300,
+                          duration: const Duration(seconds: 1),
                           backgroundColor: primary,
                           behavior: SnackBarBehavior.floating,
                         ),

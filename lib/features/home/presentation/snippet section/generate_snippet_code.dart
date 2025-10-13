@@ -5,6 +5,7 @@ import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
   final availableTags = ref.watch(tagListStreamProvider);
@@ -17,12 +18,14 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
         physics: BouncingScrollPhysics(),
         itemCount: filteredTags.length,
         itemBuilder: (context, index) {
-          final snippet = filteredTags[index];
           return Dismissible(
             key: ValueKey(snippet.id),
             direction: DismissDirection.endToStart,
             onDismissed: (_) {
-              // TODO: implement delete logic .
+              final newList = ref
+                  .read(snippetListStateProvider)
+                  .deleteSnippet(snippet.id);
+              ref.read(snippetListStateProvider.notifier).state = [...newList];
             },
             background: Container(
               color: backgound,
@@ -40,11 +43,39 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(snippet.title, style: TextStyle(color: iconbg)),
+                  Text(snippet.name, style: TextStyle(color: iconbg)),
                   const Spacer(),
-                  Icon(Icons.favorite_border_rounded, color: iconbg),
+                  IconButton(
+                    icon:
+                        snippet.isLiked
+                            ? Icon(
+                              Icons.favorite_rounded,
+                              color: Colors.redAccent,
+                            )
+                            : Icon(
+                              Icons.favorite_border_rounded,
+                              color: iconbg,
+                            ),
+                    onPressed: () {
+                      _toggleFavoriteButton(ref, snippet);
+                    },
+                  ),
                   const SizedBox(width: 8),
-                  Icon(Icons.bookmark_border_rounded, color: iconbg),
+                  IconButton(
+                    icon:
+                        snippet.isBookmarked
+                            ? Icon(
+                              Icons.bookmarks_rounded,
+                              color: Colors.blueAccent,
+                            )
+                            : Icon(
+                              Icons.bookmark_border_rounded,
+                              color: iconbg,
+                            ),
+                    onPressed: () {
+                      _toggleBookMarkButton(ref, snippet);
+                    },
+                  ),
                 ],
               ),
               subtitle: Padding(
@@ -77,4 +108,20 @@ Widget generateTagForSnippetCode(TagModel tag) {
       fontSize: 12,
     ),
   );
+}
+
+void _toggleFavoriteButton(WidgetRef ref, SnippetModel snippet) {
+  final snippets = ref.read(snippetListStateProvider);
+  final indexOfOldSnippet = snippets.indexOf(snippet);
+  final newSnippet = snippet.likeSnippet(snippet);
+  snippets[indexOfOldSnippet] = newSnippet;
+  ref.read(snippetListStateProvider.notifier).state = [...snippets];
+}
+
+void _toggleBookMarkButton(WidgetRef ref, SnippetModel snippet) {
+  final snippets = ref.read(snippetListStateProvider);
+  final indexOfOldSnippet = snippets.indexOf(snippet);
+  final newSnippet = snippet.bookMarkSnippet(snippet);
+  snippets[indexOfOldSnippet] = newSnippet;
+  ref.read(snippetListStateProvider.notifier).state = [...snippets];
 }
