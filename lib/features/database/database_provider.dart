@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snippet_code/features/database/tag_database.dart';
+import 'package:snippet_code/features/database/app_database.dart';
+import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_db_repo.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/tag_db_repo.dart';
 
 final dataBaseProvider = StateProvider<AppDatabase>((ref) {
@@ -33,4 +35,40 @@ final deleteTag = Provider.family<void, TagModel>((ref, item) {
   db.deleteItem(item);
 });
 
-// TODO: fix updating ui , merge db with riverpod
+final updateTag = Provider.family<void, TagModel>((ref, item) {
+  final db = ref.watch(tagDatabaseProvider);
+  db.updateItem(item);
+});
+
+final snippetDatabaseProvider = Provider<SnippetDatabase>((ref) {
+  final db = ref.watch(dataBaseProvider);
+  return SnippetDatabase(db);
+});
+
+final snippetDatabseAllItemsProvider = FutureProvider<List<SnippetModel>>((
+  ref,
+) {
+  final db = ref.watch(snippetDatabaseProvider);
+  return db.readItems();
+});
+
+final snippetListStreamProvider = StreamProvider<List<SnippetModel>>((ref) {
+  final db = ref.watch(snippetDatabaseProvider);
+  final stream = db.watchAllTags();
+  return stream;
+});
+
+final addNewSnippet = Provider.family<void, SnippetModel>((ref, item) {
+  final db = ref.watch(snippetDatabaseProvider);
+  db.addNewItem(item);
+});
+
+final deleteSnippet = Provider.family<void, SnippetModel>((ref, item) {
+  final db = ref.watch(snippetDatabaseProvider);
+  db.deleteItem(item);
+});
+
+final updateSnippet = Provider.family<void, SnippetModel>((ref, item) {
+  final db = ref.watch(snippetDatabaseProvider);
+  db.updateItem(item);
+});

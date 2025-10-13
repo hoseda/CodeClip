@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 
-part 'tag_database.g.dart';
+part 'app_database.g.dart';
 
 class TagTable extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -12,7 +12,16 @@ class TagTable extends Table {
   TextColumn get color => text().withLength(max: 100)();
 }
 
-@DriftDatabase(tables: [TagTable])
+class SnippetTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text().withLength(min: 1, max: 100)();
+  TextColumn get code => text()();
+  TextColumn get tagsJson => text()();
+  BoolColumn get isLiked => boolean()();
+  BoolColumn get isBookmarked => boolean()();
+}
+
+@DriftDatabase(tables: [TagTable, SnippetTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
 

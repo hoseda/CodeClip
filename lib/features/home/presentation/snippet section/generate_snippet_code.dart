@@ -46,32 +46,46 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
                   Text(snippet.name, style: TextStyle(color: iconbg)),
                   const Spacer(),
                   IconButton(
-                    icon:
-                        snippet.isLiked
-                            ? Icon(
-                              Icons.favorite_rounded,
-                              color: Colors.redAccent,
-                            )
-                            : Icon(
-                              Icons.favorite_border_rounded,
-                              color: iconbg,
-                            ),
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child:
+                          snippet.isLiked
+                              ? Icon(
+                                Icons.favorite_rounded,
+                                color: Colors.redAccent,
+                              )
+                              : Icon(
+                                Icons.favorite_border_rounded,
+                                color: iconbg,
+                              ),
+                    ),
+
                     onPressed: () {
                       _toggleFavoriteButton(ref, snippet);
                     },
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon:
-                        snippet.isBookmarked
-                            ? Icon(
-                              Icons.bookmarks_rounded,
-                              color: Colors.blueAccent,
-                            )
-                            : Icon(
-                              Icons.bookmark_border_rounded,
-                              color: iconbg,
-                            ),
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child:
+                          snippet.isBookmarked
+                              ? Icon(
+                                Icons.bookmarks_rounded,
+                                color: Colors.blueAccent,
+                              )
+                              : Icon(
+                                Icons.bookmark_border_rounded,
+                                color: iconbg,
+                              ),
+                    ),
+
                     onPressed: () {
                       _toggleBookMarkButton(ref, snippet);
                     },

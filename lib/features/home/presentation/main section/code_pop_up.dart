@@ -7,7 +7,6 @@ import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
-import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 Future<void> getCodePopUpMenu(BuildContext context) async {
   TextEditingController controllerName = TextEditingController();
@@ -141,13 +140,21 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                     if (currentName.isNotEmpty &&
                         currentCode.isNotEmpty &&
                         formKey.currentState!.validate()) {
-                      _addNewSnippetCode(
+                      // _addNewSnippetCode(
+                      //   ref,
+                      //   currentName,
+                      //   currentCode,
+                      //   curruntTags,
+                      // );
+
+                      _addNewSnippet(
                         ref,
                         currentName,
                         currentCode,
                         curruntTags,
+                        false,
+                        false,
                       );
-
                       Navigator.of(context).pop();
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -176,25 +183,25 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
   );
 }
 
-void _addNewSnippetCode(
-  WidgetRef ref,
-  String name,
-  String code,
-  Set<int> tags,
-) {
-  final newSnippetCode = SnippetModel(
-    id: DateTime.now().millisecondsSinceEpoch.toInt(),
-    name: name,
-    code: code,
-    tags: tags,
-  );
+// void _addNewSnippetCode(
+//   WidgetRef ref,
+//   String name,
+//   String code,
+//   Set<int> tags,
+// ) {
+//   final newSnippetCode = SnippetModel(
+//     id: DateTime.now().millisecondsSinceEpoch.toInt(),
+//     name: name,
+//     code: code,
+//     tags: tags,
+//   );
 
-  final snippetList = ref.read(snippetListStateProvider);
-  ref.read(snippetListStateProvider.notifier).state = [
-    ...snippetList,
-    newSnippetCode,
-  ];
-}
+//   final snippetList = ref.read(snippetListStateProvider);
+//   ref.read(snippetListStateProvider.notifier).state = [
+//     ...snippetList,
+//     newSnippetCode,
+//   ];
+// }
 
 Widget generateTagListCodePopUp(WidgetRef ref) {
   final tagList = ref.watch(tagListStreamProvider);
@@ -244,3 +251,25 @@ void toggleTagCodePopUpSelection(WidgetRef ref, TagModel tag) {
 
   selected.state = current;
 }
+
+void _addNewSnippet(
+  WidgetRef ref,
+  String name,
+  String code,
+  Set<int> tags,
+  bool isLiked,
+  bool isBookmarked,
+) {
+  final newSnippet = SnippetModel(
+    id: DateTime.now().millisecondsSinceEpoch.toInt(),
+    name: name,
+    code: code,
+    tags: tags,
+    isLiked: isLiked,
+    isBookmarked: isBookmarked,
+  );
+
+  ref.read(addNewSnippet(newSnippet));
+}
+
+// TODO : have some error.

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:snippet_code/features/database/db_repository.dart';
-import 'package:snippet_code/features/database/tag_database.dart';
+import 'package:snippet_code/features/database/app_database.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 
 class TagDatabase extends DatabaseRepository<TagModel> {
