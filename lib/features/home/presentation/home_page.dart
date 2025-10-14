@@ -223,8 +223,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                               ),
                             ),
                           ),
-                          ClipRRect(
-                            child: generateSnippetList(ref, snippetSearchInput),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: ClipRect(
+                                child: generateSnippetList(
+                                  ref,
+                                  snippetSearchInput,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

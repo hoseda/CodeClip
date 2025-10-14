@@ -21,7 +21,14 @@ class SnippetTable extends Table {
   BoolColumn get isBookmarked => boolean()();
 }
 
-@DriftDatabase(tables: [TagTable, SnippetTable])
+class SnippetTagTable extends Table {
+  IntColumn get snippetId =>
+      integer().references(SnippetTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get tagId =>
+      integer().references(TagTable, #id, onDelete: KeyAction.cascade)();
+}
+
+@DriftDatabase(tables: [TagTable, SnippetTable, SnippetTagTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(openConnection());
 

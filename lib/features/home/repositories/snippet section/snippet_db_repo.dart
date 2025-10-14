@@ -82,10 +82,20 @@ class SnippetDatabase extends DatabaseRepository<SnippetModel> {
   }
 }
 
-String tagsToString(Set<int> tags) {
-  return jsonEncode(tags);
+String tagsToString(Set<int>? tags) {
+  if (tags == null) return jsonEncode([]); // safe default
+  return jsonEncode(tags.toList());
 }
 
-Set<int> stringToTags(String source) {
-  return Set<int>.from(jsonDecode(source));
+Set<int> stringToTags(String? source) {
+  if (source == null || source.isEmpty) return {};
+  try {
+    final decoded = jsonDecode(source);
+    if (decoded is List) {
+      return decoded.map((e) => e as int).toSet();
+    }
+  } catch (e) {
+    // ignore malformed JSON
+  }
+  return {};
 }

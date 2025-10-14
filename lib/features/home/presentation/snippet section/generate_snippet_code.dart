@@ -5,7 +5,6 @@ import 'package:snippet_code/core/utils/get_constrasting_color.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
-import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
   final availableTags = ref.watch(tagListStreamProvider);
@@ -22,10 +21,7 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
             key: ValueKey(snippet.id),
             direction: DismissDirection.endToStart,
             onDismissed: (_) {
-              final newList = ref
-                  .read(snippetListStateProvider)
-                  .deleteSnippet(snippet.id);
-              ref.read(snippetListStateProvider.notifier).state = [...newList];
+              ref.read(deleteSnippet(snippet));
             },
             background: Container(
               color: backgound,
@@ -125,17 +121,11 @@ Widget generateTagForSnippetCode(TagModel tag) {
 }
 
 void _toggleFavoriteButton(WidgetRef ref, SnippetModel snippet) {
-  final snippets = ref.read(snippetListStateProvider);
-  final indexOfOldSnippet = snippets.indexOf(snippet);
-  final newSnippet = snippet.likeSnippet(snippet);
-  snippets[indexOfOldSnippet] = newSnippet;
-  ref.read(snippetListStateProvider.notifier).state = [...snippets];
+  final newSnippet = snippet.copyWith(isLiked: !snippet.isLiked);
+  ref.read(updateSnippet(newSnippet));
 }
 
 void _toggleBookMarkButton(WidgetRef ref, SnippetModel snippet) {
-  final snippets = ref.read(snippetListStateProvider);
-  final indexOfOldSnippet = snippets.indexOf(snippet);
-  final newSnippet = snippet.bookMarkSnippet(snippet);
-  snippets[indexOfOldSnippet] = newSnippet;
-  ref.read(snippetListStateProvider.notifier).state = [...snippets];
+  final newSnippet = snippet.copyWith(isBookmarked: !snippet.isBookmarked);
+  ref.read(updateSnippet(newSnippet));
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_db_repo.dart';
+
 class SnippetModel {
   final int id;
   final String name;
@@ -45,23 +47,27 @@ class SnippetModel {
       'id': id,
       'name': name,
       'code': code,
-      'tags': tags,
+      'tags': jsonEncode(tags.toList()),
+      'isLiked': isLiked,
+      'isBookmarked': isBookmarked,
     };
   }
 
   factory SnippetModel.fromMap(Map<String, dynamic> map) {
     return SnippetModel(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      code: map['code'] as String,
-      tags: map['tags'] as Set<int>,
+      id: (map['id'] ?? 0) as int,
+      name: (map['title'] ?? '') as String,
+      code: (map['code'] ?? '') as String,
+      tags: stringToTags(map['tagsJson']?.toString() ?? '[]'),
+      isLiked: (map['isLiked'] ?? false) as bool,
+      isBookmarked: (map['isBookmarked'] ?? false) as bool,
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory SnippetModel.fromJson(String source) =>
-      SnippetModel.fromMap(json.encode(source) as Map<String, dynamic>);
+      SnippetModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 extension SnippetTools on SnippetModel {

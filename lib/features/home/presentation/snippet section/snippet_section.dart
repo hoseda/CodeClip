@@ -26,13 +26,24 @@ Widget generateSnippetList(WidgetRef ref, String input) {
         );
       }
 
+      if (filteredList.isEmpty && input.isNotEmpty) {
+        return Center(
+          child: Text("No Such Snippet.", style: TextStyle(color: iconbg)),
+        );
+      }
+
       return Wrap(
         spacing: 10,
         runSpacing: 10,
         children: filteredList.map((t) => generateSnippetCode(ref, t)).toList(),
       );
     },
-    error: (error, stackTrace) => Text("Error : $error"),
+    error: (error, stackTrace) {
+      return Text(
+        "Errors : $error | Stack : $stackTrace",
+        style: TextStyle(color: Colors.red),
+      );
+    },
     loading: () => const CircularProgressIndicator(),
   );
 }

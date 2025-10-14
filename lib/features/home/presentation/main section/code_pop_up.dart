@@ -140,13 +140,6 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                     if (currentName.isNotEmpty &&
                         currentCode.isNotEmpty &&
                         formKey.currentState!.validate()) {
-                      // _addNewSnippetCode(
-                      //   ref,
-                      //   currentName,
-                      //   currentCode,
-                      //   curruntTags,
-                      // );
-
                       _addNewSnippet(
                         ref,
                         currentName,
@@ -182,26 +175,6 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
         ),
   );
 }
-
-// void _addNewSnippetCode(
-//   WidgetRef ref,
-//   String name,
-//   String code,
-//   Set<int> tags,
-// ) {
-//   final newSnippetCode = SnippetModel(
-//     id: DateTime.now().millisecondsSinceEpoch.toInt(),
-//     name: name,
-//     code: code,
-//     tags: tags,
-//   );
-
-//   final snippetList = ref.read(snippetListStateProvider);
-//   ref.read(snippetListStateProvider.notifier).state = [
-//     ...snippetList,
-//     newSnippetCode,
-//   ];
-// }
 
 Widget generateTagListCodePopUp(WidgetRef ref) {
   final tagList = ref.watch(tagListStreamProvider);
@@ -268,7 +241,6 @@ void _addNewSnippet(
     isLiked: isLiked,
     isBookmarked: isBookmarked,
   );
-
   ref.read(addNewSnippet(newSnippet));
 }
 
