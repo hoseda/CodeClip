@@ -43,7 +43,7 @@ Widget generateTag(
   );
 }
 
-Widget generateTagList(WidgetRef ref, String input) {
+Widget generateTagList(WidgetRef ref, BuildContext context, String input) {
   final tagList = ref.watch(tagListStreamProvider);
   final selectedTags = ref.watch(selectedTagIdsProvider);
   return tagList.when(
@@ -73,8 +73,23 @@ Widget generateTagList(WidgetRef ref, String input) {
               final isSelected = selectedTags.contains(tag.id);
               return generateTag(
                 tag,
-                onDelete: () {
-                  ref.read(deleteTag(tag));
+                onDelete: () async {
+                  try {
+                    ref.read(deleteTag(tag));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          e.toString(),
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                        width: 300,
+                        duration: const Duration(seconds: 1),
+                        backgroundColor: primary,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 },
                 onTap: () {
                   toggleTagSelection(ref, tag);

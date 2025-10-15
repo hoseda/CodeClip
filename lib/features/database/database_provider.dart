@@ -30,9 +30,13 @@ final addNewTag = Provider.family<void, TagModel>((ref, tag) {
   db.addNewItem(tag);
 });
 
-final deleteTag = Provider.family<void, TagModel>((ref, item) {
+final deleteTag = Provider.family<void, TagModel>((ref, item) async {
   final db = ref.watch(tagDatabaseProvider);
-  db.deleteItem(item);
+  try {
+    await db.deleteIfAllowedItem(item);
+  } catch (e) {
+    print(e.toString());
+  }
 });
 
 final updateTag = Provider.family<void, TagModel>((ref, item) {

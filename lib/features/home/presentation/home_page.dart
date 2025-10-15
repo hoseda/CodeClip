@@ -154,7 +154,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Expanded(
                             child: SingleChildScrollView(
                               padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: generateTagList(ref, tagSearchInput),
+                              child: generateTagList(
+                                ref,
+                                context,
+                                tagSearchInput,
+                              ),
                             ),
                           ),
                         ],

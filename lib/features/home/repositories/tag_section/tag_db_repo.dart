@@ -25,10 +25,36 @@ class TagDatabase {
         );
   }
 
-  Future deleteItem(TagModel item) async {
+  Future<bool> canDeleteTag(int tagId) async {
+    final taggedSnippet =
+        await (database.select(database.snippetTagTable)
+          ..where((t) => t.tagId.equals(tagId))).get();
+
+    for (var relation in taggedSnippet) {
+      final count =
+          await (database.select(database.snippetTagTable)
+            ..where((s) => s.snippetId.equals(relation.snippetId))).get();
+      if (count.length == 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future deleteIfAllowedItem(TagModel item) async {
     // delete the given item from database.
+    final canDelete = await canDeleteTag(item.id);
+
+    if (!canDelete) {
+      throw Exception(
+        "Cannot Delete This Tag. At Least One Snippet Has Only This Tag.",
+      );
+    }
     await (database.delete(database.tagTable)
       ..where((t) => t.id.equals(item.id))).go();
+
+    await (database.delete(database.snippetTagTable)
+      ..where((t) => t.tagId.equals(item.id))).go();
   }
 
   Future updateItem(TagModel item) async {
