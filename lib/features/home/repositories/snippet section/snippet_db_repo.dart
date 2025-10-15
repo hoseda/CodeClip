@@ -1,44 +1,50 @@
-import 'dart:convert';
-
 import 'package:drift/drift.dart';
 import 'package:snippet_code/features/database/app_database.dart';
-import 'package:snippet_code/features/database/db_repository.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 
-class SnippetDatabase extends DatabaseRepository<SnippetModel> {
+class SnippetDatabase {
   final AppDatabase database;
   static SnippetDatabase? _instance;
 
-  factory SnippetDatabase(AppDatabase db) {
-    _instance ??= SnippetDatabase._internal(db);
+  factory SnippetDatabase(AppDatabase database) {
+    _instance ??= SnippetDatabase._internal(database);
     return _instance!;
   }
 
   SnippetDatabase._internal(this.database);
 
-  @override
-  Future addNewItem(SnippetModel item) async {
-    await database
-        .into(database.snippetTable)
-        .insert(
-          SnippetTableCompanion(
-            id: Value(item.id),
-            title: Value(item.name),
-            code: Value(item.code),
-            tagsJson: Value(tagsToString(item.tags)),
-            isLiked: Value(item.isLiked),
-            isBookmarked: Value(item.isBookmarked),
-          ),
-        );
+  Future<int> addNewItem(SnippetModel item, Set<int> tagsId) async {
+    return database.transaction(() async {
+      final snippetId = await database
+          .into(database.snippetTable)
+          .insert(
+            SnippetTableCompanion(
+              title: Value(item.name),
+              code: Value(item.code),
+              isLiked: Value(item.isLiked),
+              isBookmarked: Value(item.isBookmarked),
+            ),
+          );
+
+      for (var tagId in tagsId) {
+        await database
+            .into(database.snippetTagTable)
+            .insert(
+              SnippetTagTableCompanion(
+                tagId: Value(tagId),
+                snippetId: Value(snippetId),
+              ),
+            );
+      }
+      return snippetId;
+    });
   }
 
-  @override
   Future deleteItem(SnippetModel item) async {
     await (database.delete(database.snippetTable)
       ..where((t) => t.id.equals(item.id))).go();
   }
 
-  @override
   Future readItem(SnippetModel item) async {
     final snippets =
         await (database.select(database.snippetTable)
@@ -47,7 +53,6 @@ class SnippetDatabase extends DatabaseRepository<SnippetModel> {
     return snippets != null ? SnippetModel.fromMap(snippets.toJson()) : null;
   }
 
-  @override
   Future<List<SnippetModel>> readItems() async {
     final snippetData = await database.select(database.snippetTable).get();
     return snippetData.map((t) {
@@ -55,47 +60,67 @@ class SnippetDatabase extends DatabaseRepository<SnippetModel> {
         id: t.id,
         name: t.title,
         code: t.code,
-        tags: stringToTags(t.tagsJson),
+        isLiked: t.isLiked,
+        isBookmarked: t.isBookmarked,
       );
     }).toList();
   }
 
-  @override
   Future updateItem(SnippetModel item) async {
     await (database.update(database.snippetTable)
       ..where((t) => t.id.equals(item.id))).write(
       SnippetTableCompanion(
         title: Value(item.name),
         code: Value(item.code),
-        tagsJson: Value(tagsToString(item.tags)),
         isLiked: Value(item.isLiked),
         isBookmarked: Value(item.isBookmarked),
       ),
     );
   }
 
-  @override
   Stream<List<SnippetModel>> watchAllTags() {
     return (database.select(database.snippetTable)).watch().map(
       (rows) => rows.map((e) => SnippetModel.fromMap(e.toJson())).toList(),
     );
   }
-}
 
-String tagsToString(Set<int>? tags) {
-  if (tags == null) return jsonEncode([]); // safe default
-  return jsonEncode(tags.toList());
-}
+  Stream<List<SnippetModel>> watchSnippetsWithTags() {
+    final snippetQuery = (database.select(database.snippetTable)
+      ..orderBy([(t) => OrderingTerm.asc(t.title)])).join([
+      leftOuterJoin(
+        database.snippetTagTable,
+        database.snippetTagTable.snippetId.equalsExp(database.snippetTable.id),
+      ),
+      leftOuterJoin(
+        database.tagTable,
+        database.tagTable.id.equalsExp(database.snippetTagTable.tagId),
+      ),
+    ]);
 
-Set<int> stringToTags(String? source) {
-  if (source == null || source.isEmpty) return {};
-  try {
-    final decoded = jsonDecode(source);
-    if (decoded is List) {
-      return decoded.map((e) => e as int).toSet();
-    }
-  } catch (e) {
-    // ignore malformed JSON
+    return snippetQuery.watch().map((rows) {
+      final Map<int, SnippetModel> snippets = {};
+
+      for (var row in rows) {
+        final snippet = row.readTable(database.snippetTable);
+        final tag = row.readTableOrNull(database.tagTable);
+
+        snippets.putIfAbsent(
+          snippet.id,
+          () => SnippetModel(
+            id: snippet.id,
+            name: snippet.title,
+            code: snippet.code,
+            isLiked: snippet.isLiked,
+            isBookmarked: snippet.isBookmarked,
+            tagsId: {},
+          ),
+        );
+
+        if (tag != null) {
+          snippets[snippet.id]!.tagsId.add(tag.id);
+        }
+      }
+      return snippets.values.toList();
+    });
   }
-  return {};
 }

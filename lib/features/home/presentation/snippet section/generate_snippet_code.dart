@@ -7,101 +7,89 @@ import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 
 Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
-  final availableTags = ref.watch(tagListStreamProvider);
-  return availableTags.when(
-    data: (tags) {
+  final allTags = ref.watch(tagListStreamProvider);
+  return allTags.when(
+    data: (data) {
       final filteredTags =
-          tags.where((tag) => snippet.tags.contains(tag.id)).toList();
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
-        itemCount: filteredTags.length,
-        itemBuilder: (context, index) {
-          return Dismissible(
-            key: ValueKey(snippet.id),
-            direction: DismissDirection.endToStart,
-            onDismissed: (_) {
-              ref.read(deleteSnippet(snippet));
-            },
-            background: Container(
-              color: backgound,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(left: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.delete, color: iconbg, size: 24),
-                  const SizedBox(width: 15),
-                ],
-              ),
-            ),
-            child: ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(snippet.name, style: TextStyle(color: iconbg)),
-                  const Spacer(),
-                  IconButton(
-                    icon: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation) {
-                        return ScaleTransition(scale: animation, child: child);
-                      },
-                      child:
-                          snippet.isLiked
-                              ? Icon(
-                                Icons.favorite_rounded,
-                                color: Colors.redAccent,
-                              )
-                              : Icon(
-                                Icons.favorite_border_rounded,
-                                color: iconbg,
-                              ),
-                    ),
+          data.where((t) => snippet.tagsId.contains(t.id)).toList();
 
-                    onPressed: () {
-                      _toggleFavoriteButton(ref, snippet);
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation) {
-                        return ScaleTransition(scale: animation, child: child);
-                      },
-                      child:
-                          snippet.isBookmarked
-                              ? Icon(
-                                Icons.bookmarks_rounded,
-                                color: Colors.blueAccent,
-                              )
-                              : Icon(
-                                Icons.bookmark_border_rounded,
-                                color: iconbg,
-                              ),
-                    ),
-
-                    onPressed: () {
-                      _toggleBookMarkButton(ref, snippet);
-                    },
-                  ),
-                ],
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children:
-                      filteredTags
-                          .map((t) => generateTagForSnippetCode(t))
-                          .toList(),
-                ),
-              ),
-            ),
-          );
+      return Dismissible(
+        key: ValueKey(snippet.id),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) {
+          ref.read(deleteSnippet(snippet));
         },
+        background: Container(
+          color: backgound,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(Icons.delete, color: iconbg, size: 24),
+              const SizedBox(width: 15),
+            ],
+          ),
+        ),
+        child: ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(snippet.name, style: TextStyle(color: iconbg)),
+              const Spacer(),
+              IconButton(
+                icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child:
+                      snippet.isLiked
+                          ? Icon(
+                            Icons.favorite_rounded,
+                            color: Colors.redAccent,
+                          )
+                          : Icon(Icons.favorite_border_rounded, color: iconbg),
+                ),
+
+                onPressed: () {
+                  _toggleFavoriteButton(ref, snippet);
+                },
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child:
+                      snippet.isBookmarked
+                          ? Icon(
+                            Icons.bookmarks_rounded,
+                            color: Colors.blueAccent,
+                          )
+                          : Icon(Icons.bookmark_border_rounded, color: iconbg),
+                ),
+
+                onPressed: () {
+                  _toggleBookMarkButton(ref, snippet);
+                },
+              ),
+            ],
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children:
+                  filteredTags
+                      .map((t) => generateTagForSnippetCode(t))
+                      .toList(),
+            ),
+          ),
+        ),
       );
     },
     error: (error, stackTrace) => Text("Error : $error"),

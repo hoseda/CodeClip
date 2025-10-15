@@ -6,8 +6,7 @@ import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/presentation/snippet%20section/generate_snippet_code.dart';
 
 Widget generateSnippetList(WidgetRef ref, String input) {
-  final asyncSnippets = ref.watch(snippetListStreamProvider);
-
+  final asyncSnippets = ref.watch(snippeWithTagstListStreamProvider);
   return asyncSnippets.when(
     data: (snippets) {
       List<SnippetModel> filteredList = snippets;

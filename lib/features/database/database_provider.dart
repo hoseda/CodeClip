@@ -52,16 +52,15 @@ final snippetDatabseAllItemsProvider = FutureProvider<List<SnippetModel>>((
   return db.readItems();
 });
 
-final snippetListStreamProvider =
+final snippeWithTagstListStreamProvider =
     StreamProvider.autoDispose<List<SnippetModel>>((ref) {
       final db = ref.watch(snippetDatabaseProvider);
-      final stream = db.watchAllTags();
-      return stream;
+      return db.watchSnippetsWithTags();
     });
 
 final addNewSnippet = Provider.family<void, SnippetModel>((ref, item) {
   final db = ref.watch(snippetDatabaseProvider);
-  db.addNewItem(item);
+  db.addNewItem(item, item.tagsId);
 });
 
 final deleteSnippet = Provider.family<void, SnippetModel>((ref, item) {

@@ -1,12 +1,10 @@
 import 'dart:convert';
 
-import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_db_repo.dart';
-
 class SnippetModel {
   final int id;
   final String name;
   final String code;
-  final Set<int> tags;
+  final Set<int> tagsId;
   final bool isLiked;
   final bool isBookmarked;
 
@@ -14,21 +12,20 @@ class SnippetModel {
     required this.id,
     required this.name,
     required this.code,
-    required this.tags,
+    this.tagsId = const {},
     this.isLiked = false,
     this.isBookmarked = false,
   });
 
   @override
   String toString() {
-    return "SnippetModel {id:$id , Name:$name , tags:$tags , code:$code}";
+    return "SnippetModel {id:$id , Name:$name , code:$code}";
   }
 
   SnippetModel copyWith({
     int? id,
     String? name,
     String? code,
-    Set<int>? tags,
     bool? isLiked,
     bool? isBookmarked,
   }) {
@@ -36,7 +33,6 @@ class SnippetModel {
       id: id ?? this.id,
       name: name ?? this.name,
       code: code ?? this.code,
-      tags: tags ?? this.tags,
       isLiked: isLiked ?? this.isLiked,
       isBookmarked: isBookmarked ?? this.isBookmarked,
     );
@@ -47,7 +43,6 @@ class SnippetModel {
       'id': id,
       'name': name,
       'code': code,
-      'tags': jsonEncode(tags.toList()),
       'isLiked': isLiked,
       'isBookmarked': isBookmarked,
     };
@@ -58,7 +53,6 @@ class SnippetModel {
       id: (map['id'] ?? 0) as int,
       name: (map['title'] ?? '') as String,
       code: (map['code'] ?? '') as String,
-      tags: stringToTags(map['tagsJson']?.toString() ?? '[]'),
       isLiked: (map['isLiked'] ?? false) as bool,
       isBookmarked: (map['isBookmarked'] ?? false) as bool,
     );

@@ -299,17 +299,6 @@ class $SnippetTableTable extends SnippetTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _tagsJsonMeta = const VerificationMeta(
-    'tagsJson',
-  );
-  @override
-  late final GeneratedColumn<String> tagsJson = GeneratedColumn<String>(
-    'tags_json',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _isLikedMeta = const VerificationMeta(
     'isLiked',
   );
@@ -343,7 +332,6 @@ class $SnippetTableTable extends SnippetTable
     id,
     title,
     code,
-    tagsJson,
     isLiked,
     isBookmarked,
   ];
@@ -377,14 +365,6 @@ class $SnippetTableTable extends SnippetTable
       );
     } else if (isInserting) {
       context.missing(_codeMeta);
-    }
-    if (data.containsKey('tags_json')) {
-      context.handle(
-        _tagsJsonMeta,
-        tagsJson.isAcceptableOrUnknown(data['tags_json']!, _tagsJsonMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_tagsJsonMeta);
     }
     if (data.containsKey('is_liked')) {
       context.handle(
@@ -429,11 +409,6 @@ class $SnippetTableTable extends SnippetTable
             DriftSqlType.string,
             data['${effectivePrefix}code'],
           )!,
-      tagsJson:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}tags_json'],
-          )!,
       isLiked:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -458,14 +433,12 @@ class SnippetTableData extends DataClass
   final int id;
   final String title;
   final String code;
-  final String tagsJson;
   final bool isLiked;
   final bool isBookmarked;
   const SnippetTableData({
     required this.id,
     required this.title,
     required this.code,
-    required this.tagsJson,
     required this.isLiked,
     required this.isBookmarked,
   });
@@ -475,7 +448,6 @@ class SnippetTableData extends DataClass
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['code'] = Variable<String>(code);
-    map['tags_json'] = Variable<String>(tagsJson);
     map['is_liked'] = Variable<bool>(isLiked);
     map['is_bookmarked'] = Variable<bool>(isBookmarked);
     return map;
@@ -486,7 +458,6 @@ class SnippetTableData extends DataClass
       id: Value(id),
       title: Value(title),
       code: Value(code),
-      tagsJson: Value(tagsJson),
       isLiked: Value(isLiked),
       isBookmarked: Value(isBookmarked),
     );
@@ -501,7 +472,6 @@ class SnippetTableData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       code: serializer.fromJson<String>(json['code']),
-      tagsJson: serializer.fromJson<String>(json['tagsJson']),
       isLiked: serializer.fromJson<bool>(json['isLiked']),
       isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
     );
@@ -513,7 +483,6 @@ class SnippetTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'code': serializer.toJson<String>(code),
-      'tagsJson': serializer.toJson<String>(tagsJson),
       'isLiked': serializer.toJson<bool>(isLiked),
       'isBookmarked': serializer.toJson<bool>(isBookmarked),
     };
@@ -523,14 +492,12 @@ class SnippetTableData extends DataClass
     int? id,
     String? title,
     String? code,
-    String? tagsJson,
     bool? isLiked,
     bool? isBookmarked,
   }) => SnippetTableData(
     id: id ?? this.id,
     title: title ?? this.title,
     code: code ?? this.code,
-    tagsJson: tagsJson ?? this.tagsJson,
     isLiked: isLiked ?? this.isLiked,
     isBookmarked: isBookmarked ?? this.isBookmarked,
   );
@@ -539,7 +506,6 @@ class SnippetTableData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       code: data.code.present ? data.code.value : this.code,
-      tagsJson: data.tagsJson.present ? data.tagsJson.value : this.tagsJson,
       isLiked: data.isLiked.present ? data.isLiked.value : this.isLiked,
       isBookmarked:
           data.isBookmarked.present
@@ -554,7 +520,6 @@ class SnippetTableData extends DataClass
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('code: $code, ')
-          ..write('tagsJson: $tagsJson, ')
           ..write('isLiked: $isLiked, ')
           ..write('isBookmarked: $isBookmarked')
           ..write(')'))
@@ -562,8 +527,7 @@ class SnippetTableData extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, code, tagsJson, isLiked, isBookmarked);
+  int get hashCode => Object.hash(id, title, code, isLiked, isBookmarked);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -571,7 +535,6 @@ class SnippetTableData extends DataClass
           other.id == this.id &&
           other.title == this.title &&
           other.code == this.code &&
-          other.tagsJson == this.tagsJson &&
           other.isLiked == this.isLiked &&
           other.isBookmarked == this.isBookmarked);
 }
@@ -580,14 +543,12 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> code;
-  final Value<String> tagsJson;
   final Value<bool> isLiked;
   final Value<bool> isBookmarked;
   const SnippetTableCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.code = const Value.absent(),
-    this.tagsJson = const Value.absent(),
     this.isLiked = const Value.absent(),
     this.isBookmarked = const Value.absent(),
   });
@@ -595,19 +556,16 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     this.id = const Value.absent(),
     required String title,
     required String code,
-    required String tagsJson,
     required bool isLiked,
     required bool isBookmarked,
   }) : title = Value(title),
        code = Value(code),
-       tagsJson = Value(tagsJson),
        isLiked = Value(isLiked),
        isBookmarked = Value(isBookmarked);
   static Insertable<SnippetTableData> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? code,
-    Expression<String>? tagsJson,
     Expression<bool>? isLiked,
     Expression<bool>? isBookmarked,
   }) {
@@ -615,7 +573,6 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (code != null) 'code': code,
-      if (tagsJson != null) 'tags_json': tagsJson,
       if (isLiked != null) 'is_liked': isLiked,
       if (isBookmarked != null) 'is_bookmarked': isBookmarked,
     });
@@ -625,7 +582,6 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     Value<int>? id,
     Value<String>? title,
     Value<String>? code,
-    Value<String>? tagsJson,
     Value<bool>? isLiked,
     Value<bool>? isBookmarked,
   }) {
@@ -633,7 +589,6 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
       id: id ?? this.id,
       title: title ?? this.title,
       code: code ?? this.code,
-      tagsJson: tagsJson ?? this.tagsJson,
       isLiked: isLiked ?? this.isLiked,
       isBookmarked: isBookmarked ?? this.isBookmarked,
     );
@@ -651,9 +606,6 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     if (code.present) {
       map['code'] = Variable<String>(code.value);
     }
-    if (tagsJson.present) {
-      map['tags_json'] = Variable<String>(tagsJson.value);
-    }
     if (isLiked.present) {
       map['is_liked'] = Variable<bool>(isLiked.value);
     }
@@ -669,9 +621,233 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('code: $code, ')
-          ..write('tagsJson: $tagsJson, ')
           ..write('isLiked: $isLiked, ')
           ..write('isBookmarked: $isBookmarked')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SnippetTagTableTable extends SnippetTagTable
+    with TableInfo<$SnippetTagTableTable, SnippetTagTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SnippetTagTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _snippetIdMeta = const VerificationMeta(
+    'snippetId',
+  );
+  @override
+  late final GeneratedColumn<int> snippetId = GeneratedColumn<int>(
+    'snippet_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES snippet_table (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  @override
+  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
+    'tag_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tag_table (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [snippetId, tagId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'snippet_tag_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SnippetTagTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('snippet_id')) {
+      context.handle(
+        _snippetIdMeta,
+        snippetId.isAcceptableOrUnknown(data['snippet_id']!, _snippetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_snippetIdMeta);
+    }
+    if (data.containsKey('tag_id')) {
+      context.handle(
+        _tagIdMeta,
+        tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tagIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => const {};
+  @override
+  SnippetTagTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SnippetTagTableData(
+      snippetId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}snippet_id'],
+          )!,
+      tagId:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}tag_id'],
+          )!,
+    );
+  }
+
+  @override
+  $SnippetTagTableTable createAlias(String alias) {
+    return $SnippetTagTableTable(attachedDatabase, alias);
+  }
+}
+
+class SnippetTagTableData extends DataClass
+    implements Insertable<SnippetTagTableData> {
+  final int snippetId;
+  final int tagId;
+  const SnippetTagTableData({required this.snippetId, required this.tagId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['snippet_id'] = Variable<int>(snippetId);
+    map['tag_id'] = Variable<int>(tagId);
+    return map;
+  }
+
+  SnippetTagTableCompanion toCompanion(bool nullToAbsent) {
+    return SnippetTagTableCompanion(
+      snippetId: Value(snippetId),
+      tagId: Value(tagId),
+    );
+  }
+
+  factory SnippetTagTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SnippetTagTableData(
+      snippetId: serializer.fromJson<int>(json['snippetId']),
+      tagId: serializer.fromJson<int>(json['tagId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'snippetId': serializer.toJson<int>(snippetId),
+      'tagId': serializer.toJson<int>(tagId),
+    };
+  }
+
+  SnippetTagTableData copyWith({int? snippetId, int? tagId}) =>
+      SnippetTagTableData(
+        snippetId: snippetId ?? this.snippetId,
+        tagId: tagId ?? this.tagId,
+      );
+  SnippetTagTableData copyWithCompanion(SnippetTagTableCompanion data) {
+    return SnippetTagTableData(
+      snippetId: data.snippetId.present ? data.snippetId.value : this.snippetId,
+      tagId: data.tagId.present ? data.tagId.value : this.tagId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SnippetTagTableData(')
+          ..write('snippetId: $snippetId, ')
+          ..write('tagId: $tagId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(snippetId, tagId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SnippetTagTableData &&
+          other.snippetId == this.snippetId &&
+          other.tagId == this.tagId);
+}
+
+class SnippetTagTableCompanion extends UpdateCompanion<SnippetTagTableData> {
+  final Value<int> snippetId;
+  final Value<int> tagId;
+  final Value<int> rowid;
+  const SnippetTagTableCompanion({
+    this.snippetId = const Value.absent(),
+    this.tagId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SnippetTagTableCompanion.insert({
+    required int snippetId,
+    required int tagId,
+    this.rowid = const Value.absent(),
+  }) : snippetId = Value(snippetId),
+       tagId = Value(tagId);
+  static Insertable<SnippetTagTableData> custom({
+    Expression<int>? snippetId,
+    Expression<int>? tagId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (snippetId != null) 'snippet_id': snippetId,
+      if (tagId != null) 'tag_id': tagId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SnippetTagTableCompanion copyWith({
+    Value<int>? snippetId,
+    Value<int>? tagId,
+    Value<int>? rowid,
+  }) {
+    return SnippetTagTableCompanion(
+      snippetId: snippetId ?? this.snippetId,
+      tagId: tagId ?? this.tagId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (snippetId.present) {
+      map['snippet_id'] = Variable<int>(snippetId.value);
+    }
+    if (tagId.present) {
+      map['tag_id'] = Variable<int>(tagId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SnippetTagTableCompanion(')
+          ..write('snippetId: $snippetId, ')
+          ..write('tagId: $tagId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -682,11 +858,35 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TagTableTable tagTable = $TagTableTable(this);
   late final $SnippetTableTable snippetTable = $SnippetTableTable(this);
+  late final $SnippetTagTableTable snippetTagTable = $SnippetTagTableTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [tagTable, snippetTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    tagTable,
+    snippetTable,
+    snippetTagTable,
+  ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'snippet_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('snippet_tag_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'tag_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('snippet_tag_table', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$TagTableTableCreateCompanionBuilder =
@@ -701,6 +901,31 @@ typedef $$TagTableTableUpdateCompanionBuilder =
       Value<String> title,
       Value<String> color,
     });
+
+final class $$TagTableTableReferences
+    extends BaseReferences<_$AppDatabase, $TagTableTable, TagTableData> {
+  $$TagTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SnippetTagTableTable, List<SnippetTagTableData>>
+  _snippetTagTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.snippetTagTable,
+    aliasName: $_aliasNameGenerator(db.tagTable.id, db.snippetTagTable.tagId),
+  );
+
+  $$SnippetTagTableTableProcessedTableManager get snippetTagTableRefs {
+    final manager = $$SnippetTagTableTableTableManager(
+      $_db,
+      $_db.snippetTagTable,
+    ).filter((f) => f.tagId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _snippetTagTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$TagTableTableFilterComposer
     extends Composer<_$AppDatabase, $TagTableTable> {
@@ -725,6 +950,31 @@ class $$TagTableTableFilterComposer
     column: $table.color,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> snippetTagTableRefs(
+    Expression<bool> Function($$SnippetTagTableTableFilterComposer f) f,
+  ) {
+    final $$SnippetTagTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.snippetTagTable,
+      getReferencedColumn: (t) => t.tagId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTagTableTableFilterComposer(
+            $db: $db,
+            $table: $db.snippetTagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TagTableTableOrderingComposer
@@ -769,6 +1019,31 @@ class $$TagTableTableAnnotationComposer
 
   GeneratedColumn<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
+
+  Expression<T> snippetTagTableRefs<T extends Object>(
+    Expression<T> Function($$SnippetTagTableTableAnnotationComposer a) f,
+  ) {
+    final $$SnippetTagTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.snippetTagTable,
+      getReferencedColumn: (t) => t.tagId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTagTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.snippetTagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TagTableTableTableManager
@@ -782,12 +1057,9 @@ class $$TagTableTableTableManager
           $$TagTableTableAnnotationComposer,
           $$TagTableTableCreateCompanionBuilder,
           $$TagTableTableUpdateCompanionBuilder,
-          (
-            TagTableData,
-            BaseReferences<_$AppDatabase, $TagTableTable, TagTableData>,
-          ),
+          (TagTableData, $$TagTableTableReferences),
           TagTableData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool snippetTagTableRefs})
         > {
   $$TagTableTableTableManager(_$AppDatabase db, $TagTableTable table)
     : super(
@@ -819,11 +1091,44 @@ class $$TagTableTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          BaseReferences(db, table, e),
+                          $$TagTableTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({snippetTagTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (snippetTagTableRefs) db.snippetTagTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (snippetTagTableRefs)
+                    await $_getPrefetchedData<
+                      TagTableData,
+                      $TagTableTable,
+                      SnippetTagTableData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$TagTableTableReferences
+                          ._snippetTagTableRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$TagTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).snippetTagTableRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.tagId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -838,19 +1143,15 @@ typedef $$TagTableTableProcessedTableManager =
       $$TagTableTableAnnotationComposer,
       $$TagTableTableCreateCompanionBuilder,
       $$TagTableTableUpdateCompanionBuilder,
-      (
-        TagTableData,
-        BaseReferences<_$AppDatabase, $TagTableTable, TagTableData>,
-      ),
+      (TagTableData, $$TagTableTableReferences),
       TagTableData,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool snippetTagTableRefs})
     >;
 typedef $$SnippetTableTableCreateCompanionBuilder =
     SnippetTableCompanion Function({
       Value<int> id,
       required String title,
       required String code,
-      required String tagsJson,
       required bool isLiked,
       required bool isBookmarked,
     });
@@ -859,10 +1160,38 @@ typedef $$SnippetTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> title,
       Value<String> code,
-      Value<String> tagsJson,
       Value<bool> isLiked,
       Value<bool> isBookmarked,
     });
+
+final class $$SnippetTableTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $SnippetTableTable, SnippetTableData> {
+  $$SnippetTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SnippetTagTableTable, List<SnippetTagTableData>>
+  _snippetTagTableRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.snippetTagTable,
+    aliasName: $_aliasNameGenerator(
+      db.snippetTable.id,
+      db.snippetTagTable.snippetId,
+    ),
+  );
+
+  $$SnippetTagTableTableProcessedTableManager get snippetTagTableRefs {
+    final manager = $$SnippetTagTableTableTableManager(
+      $_db,
+      $_db.snippetTagTable,
+    ).filter((f) => f.snippetId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _snippetTagTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$SnippetTableTableFilterComposer
     extends Composer<_$AppDatabase, $SnippetTableTable> {
@@ -888,11 +1217,6 @@ class $$SnippetTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get tagsJson => $composableBuilder(
-    column: $table.tagsJson,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<bool> get isLiked => $composableBuilder(
     column: $table.isLiked,
     builder: (column) => ColumnFilters(column),
@@ -902,6 +1226,31 @@ class $$SnippetTableTableFilterComposer
     column: $table.isBookmarked,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> snippetTagTableRefs(
+    Expression<bool> Function($$SnippetTagTableTableFilterComposer f) f,
+  ) {
+    final $$SnippetTagTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.snippetTagTable,
+      getReferencedColumn: (t) => t.snippetId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTagTableTableFilterComposer(
+            $db: $db,
+            $table: $db.snippetTagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$SnippetTableTableOrderingComposer
@@ -925,11 +1274,6 @@ class $$SnippetTableTableOrderingComposer
 
   ColumnOrderings<String> get code => $composableBuilder(
     column: $table.code,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get tagsJson => $composableBuilder(
-    column: $table.tagsJson,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -962,9 +1306,6 @@ class $$SnippetTableTableAnnotationComposer
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
 
-  GeneratedColumn<String> get tagsJson =>
-      $composableBuilder(column: $table.tagsJson, builder: (column) => column);
-
   GeneratedColumn<bool> get isLiked =>
       $composableBuilder(column: $table.isLiked, builder: (column) => column);
 
@@ -972,6 +1313,31 @@ class $$SnippetTableTableAnnotationComposer
     column: $table.isBookmarked,
     builder: (column) => column,
   );
+
+  Expression<T> snippetTagTableRefs<T extends Object>(
+    Expression<T> Function($$SnippetTagTableTableAnnotationComposer a) f,
+  ) {
+    final $$SnippetTagTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.snippetTagTable,
+      getReferencedColumn: (t) => t.snippetId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTagTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.snippetTagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$SnippetTableTableTableManager
@@ -985,12 +1351,9 @@ class $$SnippetTableTableTableManager
           $$SnippetTableTableAnnotationComposer,
           $$SnippetTableTableCreateCompanionBuilder,
           $$SnippetTableTableUpdateCompanionBuilder,
-          (
-            SnippetTableData,
-            BaseReferences<_$AppDatabase, $SnippetTableTable, SnippetTableData>,
-          ),
+          (SnippetTableData, $$SnippetTableTableReferences),
           SnippetTableData,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool snippetTagTableRefs})
         > {
   $$SnippetTableTableTableManager(_$AppDatabase db, $SnippetTableTable table)
     : super(
@@ -1009,14 +1372,12 @@ class $$SnippetTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> code = const Value.absent(),
-                Value<String> tagsJson = const Value.absent(),
                 Value<bool> isLiked = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
               }) => SnippetTableCompanion(
                 id: id,
                 title: title,
                 code: code,
-                tagsJson: tagsJson,
                 isLiked: isLiked,
                 isBookmarked: isBookmarked,
               ),
@@ -1025,14 +1386,12 @@ class $$SnippetTableTableTableManager
                 Value<int> id = const Value.absent(),
                 required String title,
                 required String code,
-                required String tagsJson,
                 required bool isLiked,
                 required bool isBookmarked,
               }) => SnippetTableCompanion.insert(
                 id: id,
                 title: title,
                 code: code,
-                tagsJson: tagsJson,
                 isLiked: isLiked,
                 isBookmarked: isBookmarked,
               ),
@@ -1042,11 +1401,45 @@ class $$SnippetTableTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          BaseReferences(db, table, e),
+                          $$SnippetTableTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({snippetTagTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (snippetTagTableRefs) db.snippetTagTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (snippetTagTableRefs)
+                    await $_getPrefetchedData<
+                      SnippetTableData,
+                      $SnippetTableTable,
+                      SnippetTagTableData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$SnippetTableTableReferences
+                          ._snippetTagTableRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$SnippetTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).snippetTagTableRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.snippetId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -1061,12 +1454,380 @@ typedef $$SnippetTableTableProcessedTableManager =
       $$SnippetTableTableAnnotationComposer,
       $$SnippetTableTableCreateCompanionBuilder,
       $$SnippetTableTableUpdateCompanionBuilder,
-      (
-        SnippetTableData,
-        BaseReferences<_$AppDatabase, $SnippetTableTable, SnippetTableData>,
-      ),
+      (SnippetTableData, $$SnippetTableTableReferences),
       SnippetTableData,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool snippetTagTableRefs})
+    >;
+typedef $$SnippetTagTableTableCreateCompanionBuilder =
+    SnippetTagTableCompanion Function({
+      required int snippetId,
+      required int tagId,
+      Value<int> rowid,
+    });
+typedef $$SnippetTagTableTableUpdateCompanionBuilder =
+    SnippetTagTableCompanion Function({
+      Value<int> snippetId,
+      Value<int> tagId,
+      Value<int> rowid,
+    });
+
+final class $$SnippetTagTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $SnippetTagTableTable,
+          SnippetTagTableData
+        > {
+  $$SnippetTagTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SnippetTableTable _snippetIdTable(_$AppDatabase db) =>
+      db.snippetTable.createAlias(
+        $_aliasNameGenerator(db.snippetTagTable.snippetId, db.snippetTable.id),
+      );
+
+  $$SnippetTableTableProcessedTableManager get snippetId {
+    final $_column = $_itemColumn<int>('snippet_id')!;
+
+    final manager = $$SnippetTableTableTableManager(
+      $_db,
+      $_db.snippetTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_snippetIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $TagTableTable _tagIdTable(_$AppDatabase db) =>
+      db.tagTable.createAlias(
+        $_aliasNameGenerator(db.snippetTagTable.tagId, db.tagTable.id),
+      );
+
+  $$TagTableTableProcessedTableManager get tagId {
+    final $_column = $_itemColumn<int>('tag_id')!;
+
+    final manager = $$TagTableTableTableManager(
+      $_db,
+      $_db.tagTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tagIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SnippetTagTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SnippetTagTableTable> {
+  $$SnippetTagTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SnippetTableTableFilterComposer get snippetId {
+    final $$SnippetTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snippetId,
+      referencedTable: $db.snippetTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTableTableFilterComposer(
+            $db: $db,
+            $table: $db.snippetTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TagTableTableFilterComposer get tagId {
+    final $$TagTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tagId,
+      referencedTable: $db.tagTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TagTableTableFilterComposer(
+            $db: $db,
+            $table: $db.tagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SnippetTagTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SnippetTagTableTable> {
+  $$SnippetTagTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SnippetTableTableOrderingComposer get snippetId {
+    final $$SnippetTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snippetId,
+      referencedTable: $db.snippetTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.snippetTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TagTableTableOrderingComposer get tagId {
+    final $$TagTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tagId,
+      referencedTable: $db.tagTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TagTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.tagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SnippetTagTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SnippetTagTableTable> {
+  $$SnippetTagTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$SnippetTableTableAnnotationComposer get snippetId {
+    final $$SnippetTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snippetId,
+      referencedTable: $db.snippetTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SnippetTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.snippetTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TagTableTableAnnotationComposer get tagId {
+    final $$TagTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tagId,
+      referencedTable: $db.tagTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TagTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.tagTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SnippetTagTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SnippetTagTableTable,
+          SnippetTagTableData,
+          $$SnippetTagTableTableFilterComposer,
+          $$SnippetTagTableTableOrderingComposer,
+          $$SnippetTagTableTableAnnotationComposer,
+          $$SnippetTagTableTableCreateCompanionBuilder,
+          $$SnippetTagTableTableUpdateCompanionBuilder,
+          (SnippetTagTableData, $$SnippetTagTableTableReferences),
+          SnippetTagTableData,
+          PrefetchHooks Function({bool snippetId, bool tagId})
+        > {
+  $$SnippetTagTableTableTableManager(
+    _$AppDatabase db,
+    $SnippetTagTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer:
+              () =>
+                  $$SnippetTagTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$SnippetTagTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer:
+              () => $$SnippetTagTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> snippetId = const Value.absent(),
+                Value<int> tagId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SnippetTagTableCompanion(
+                snippetId: snippetId,
+                tagId: tagId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int snippetId,
+                required int tagId,
+                Value<int> rowid = const Value.absent(),
+              }) => SnippetTagTableCompanion.insert(
+                snippetId: snippetId,
+                tagId: tagId,
+                rowid: rowid,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$SnippetTagTableTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({snippetId = false, tagId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
+                if (snippetId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.snippetId,
+                            referencedTable: $$SnippetTagTableTableReferences
+                                ._snippetIdTable(db),
+                            referencedColumn:
+                                $$SnippetTagTableTableReferences
+                                    ._snippetIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+                if (tagId) {
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.tagId,
+                            referencedTable: $$SnippetTagTableTableReferences
+                                ._tagIdTable(db),
+                            referencedColumn:
+                                $$SnippetTagTableTableReferences
+                                    ._tagIdTable(db)
+                                    .id,
+                          )
+                          as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SnippetTagTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SnippetTagTableTable,
+      SnippetTagTableData,
+      $$SnippetTagTableTableFilterComposer,
+      $$SnippetTagTableTableOrderingComposer,
+      $$SnippetTagTableTableAnnotationComposer,
+      $$SnippetTagTableTableCreateCompanionBuilder,
+      $$SnippetTagTableTableUpdateCompanionBuilder,
+      (SnippetTagTableData, $$SnippetTagTableTableReferences),
+      SnippetTagTableData,
+      PrefetchHooks Function({bool snippetId, bool tagId})
     >;
 
 class $AppDatabaseManager {
@@ -1076,4 +1837,6 @@ class $AppDatabaseManager {
       $$TagTableTableTableManager(_db, _db.tagTable);
   $$SnippetTableTableTableManager get snippetTable =>
       $$SnippetTableTableTableManager(_db, _db.snippetTable);
+  $$SnippetTagTableTableTableManager get snippetTagTable =>
+      $$SnippetTagTableTableTableManager(_db, _db.snippetTagTable);
 }

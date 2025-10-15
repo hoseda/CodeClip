@@ -1,9 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:snippet_code/features/database/db_repository.dart';
 import 'package:snippet_code/features/database/app_database.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 
-class TagDatabase extends DatabaseRepository<TagModel> {
+class TagDatabase {
   final AppDatabase database;
   static TagDatabase? _instance;
 
@@ -14,7 +13,6 @@ class TagDatabase extends DatabaseRepository<TagModel> {
 
   TagDatabase._internal(this.database);
 
-  @override
   Future addNewItem(TagModel item) async {
     await database
         .into(database.tagTable)
@@ -27,14 +25,12 @@ class TagDatabase extends DatabaseRepository<TagModel> {
         );
   }
 
-  @override
   Future deleteItem(TagModel item) async {
     // delete the given item from database.
     await (database.delete(database.tagTable)
       ..where((t) => t.id.equals(item.id))).go();
   }
 
-  @override
   Future updateItem(TagModel item) async {
     // replace the updated item.
     await (database.update(database.tagTable)
@@ -46,7 +42,6 @@ class TagDatabase extends DatabaseRepository<TagModel> {
     );
   }
 
-  @override
   Future<List<TagModel>> readItems() async {
     //extract data from database
     final tagsData = await database.select(database.tagTable).get();
@@ -55,7 +50,6 @@ class TagDatabase extends DatabaseRepository<TagModel> {
     }).toList();
   }
 
-  @override
   Future readItem(TagModel item) async {
     //extract all tags from database
     final tags =
@@ -64,7 +58,6 @@ class TagDatabase extends DatabaseRepository<TagModel> {
     return tags != null ? TagModel.fromMap(tags.toJson()) : null;
   }
 
-  @override
   Stream<List<TagModel>> watchAllTags() {
     return (database.select(database.tagTable)).watch().map(
       (rows) => rows.map((t) => TagModel.fromMap(t.toJson())).toList(),

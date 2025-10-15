@@ -237,7 +237,7 @@ void _addNewSnippet(
     id: DateTime.now().millisecondsSinceEpoch.toInt(),
     name: name,
     code: code,
-    tags: tags,
+    tagsId: tags,
     isLiked: isLiked,
     isBookmarked: isBookmarked,
   );
