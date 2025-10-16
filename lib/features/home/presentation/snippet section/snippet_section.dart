@@ -38,7 +38,7 @@ Widget generateSnippetList(WidgetRef ref, String input) {
 
       if (input.isNotEmpty) {
         filteredList =
-            snippets
+            filteredList
                 .where(
                   (t) => t.name.toLowerCase().contains(input.toLowerCase()),
                 )

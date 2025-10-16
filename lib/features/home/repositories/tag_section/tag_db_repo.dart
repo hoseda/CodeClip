@@ -42,7 +42,6 @@ class TagDatabase {
   }
 
   Future deleteIfAllowedItem(TagModel item) async {
-    // delete the given item from database.
     final canDelete = await canDeleteTag(item.id);
 
     if (!canDelete) {

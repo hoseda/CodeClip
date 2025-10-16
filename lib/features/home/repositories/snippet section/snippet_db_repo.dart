@@ -41,9 +41,17 @@ class SnippetDatabase {
     });
   }
 
-  Future deleteItem(SnippetModel item) async {
+  Future softDeleteItem(SnippetModel item) async {
     final newItem = item.copyWith(isDeleted: true);
     await updateItem(newItem);
+  }
+
+  Future deleteItem(SnippetModel item) async {
+    await (database.delete(database.snippetTagTable)
+      ..where((t) => t.snippetId.equals(item.id))).go();
+
+    await (database.delete(database.snippetTable)
+      ..where((i) => i.id.equals(item.id))).go();
   }
 
   Future readItem(SnippetModel item) async {

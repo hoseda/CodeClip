@@ -67,6 +67,11 @@ final addNewSnippet = Provider.family<void, SnippetModel>((ref, item) {
   db.addNewItem(item, item.tagsId);
 });
 
+final softDeleteSnippet = Provider.family<void, SnippetModel>((ref, item) {
+  final db = ref.watch(snippetDatabaseProvider);
+  db.softDeleteItem(item);
+});
+
 final deleteSnippet = Provider.family<void, SnippetModel>((ref, item) {
   final db = ref.watch(snippetDatabaseProvider);
   db.deleteItem(item);

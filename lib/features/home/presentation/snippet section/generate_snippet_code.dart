@@ -21,15 +21,22 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
         direction:
             mode != ItemModel.trash
                 ? DismissDirection.endToStart
-                : DismissDirection.startToEnd,
-        onDismissed: (d) {
-          if (d == DismissDirection.endToStart) {
-            ref.read(deleteSnippet(snippet));
-          } else if (d == DismissDirection.startToEnd) {
-            final newSnippet = snippet.copyWith(isDeleted: false);
-            ref.read(updateSnippet(newSnippet));
+                : DismissDirection.horizontal,
+        onDismissed: (direction) {
+          if (mode != ItemModel.trash) {
+            if (direction == DismissDirection.endToStart) {
+              ref.read(softDeleteSnippet(snippet));
+            }
+          } else {
+            if (direction == DismissDirection.startToEnd) {
+              final newSnippet = snippet.copyWith(isDeleted: false);
+              ref.read(updateSnippet(newSnippet));
+            } else {
+              ref.read(deleteSnippet(snippet));
+            }
           }
         },
+
         background:
             mode != ItemModel.trash
                 ? Container(
@@ -51,8 +58,10 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 5),
                       Icon(Icons.refresh, color: iconbg, size: 24),
+                      const Spacer(),
+                      Icon(Icons.delete, color: Colors.redAccent, size: 24),
+                      const SizedBox(width: 10),
                     ],
                   ),
                 ),

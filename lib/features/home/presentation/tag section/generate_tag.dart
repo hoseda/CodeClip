@@ -80,7 +80,7 @@ Widget generateTagList(WidgetRef ref, BuildContext context, String input) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          "Cannot This Delete Tag.",
+                          "Cannot Delete This Tag.",
                           style: TextStyle(color: Colors.redAccent),
                         ),
                         width: 300,
