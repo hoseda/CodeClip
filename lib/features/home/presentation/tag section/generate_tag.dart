@@ -75,17 +75,17 @@ Widget generateTagList(WidgetRef ref, BuildContext context, String input) {
                 tag,
                 onDelete: () async {
                   try {
-                    ref.read(deleteTag(tag));
+                    await ref.read(deleteTag(tag).future);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          e.toString(),
+                          "Cannot This Delete Tag.",
                           style: TextStyle(color: Colors.redAccent),
                         ),
                         width: 300,
-                        duration: const Duration(seconds: 1),
-                        backgroundColor: primary,
+                        duration: const Duration(seconds: 2),
+                        backgroundColor: button,
                         behavior: SnackBarBehavior.floating,
                       ),
                     );

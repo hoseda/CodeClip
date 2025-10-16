@@ -7,6 +7,7 @@ class SnippetModel {
   final Set<int> tagsId;
   final bool isLiked;
   final bool isBookmarked;
+  final bool isDeleted;
 
   SnippetModel({
     required this.id,
@@ -15,6 +16,7 @@ class SnippetModel {
     this.tagsId = const {},
     this.isLiked = false,
     this.isBookmarked = false,
+    this.isDeleted = false,
   });
 
   @override
@@ -28,6 +30,7 @@ class SnippetModel {
     String? code,
     bool? isLiked,
     bool? isBookmarked,
+    bool? isDeleted,
   }) {
     return SnippetModel(
       id: id ?? this.id,
@@ -35,6 +38,7 @@ class SnippetModel {
       code: code ?? this.code,
       isLiked: isLiked ?? this.isLiked,
       isBookmarked: isBookmarked ?? this.isBookmarked,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -55,6 +59,7 @@ class SnippetModel {
       code: (map['code'] ?? '') as String,
       isLiked: (map['isLiked'] ?? false) as bool,
       isBookmarked: (map['isBookmarked'] ?? false) as bool,
+      isDeleted: (map['isDeleted'] ?? false) as bool,
     );
   }
 

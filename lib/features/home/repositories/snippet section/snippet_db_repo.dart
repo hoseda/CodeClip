@@ -23,6 +23,7 @@ class SnippetDatabase {
               code: Value(item.code),
               isLiked: Value(item.isLiked),
               isBookmarked: Value(item.isBookmarked),
+              isDeleted: Value(item.isDeleted),
             ),
           );
 
@@ -41,8 +42,8 @@ class SnippetDatabase {
   }
 
   Future deleteItem(SnippetModel item) async {
-    await (database.delete(database.snippetTable)
-      ..where((t) => t.id.equals(item.id))).go();
+    final newItem = item.copyWith(isDeleted: true);
+    await updateItem(newItem);
   }
 
   Future readItem(SnippetModel item) async {
@@ -62,6 +63,7 @@ class SnippetDatabase {
         code: t.code,
         isLiked: t.isLiked,
         isBookmarked: t.isBookmarked,
+        isDeleted: t.isDeleted,
       );
     }).toList();
   }
@@ -74,6 +76,7 @@ class SnippetDatabase {
         code: Value(item.code),
         isLiked: Value(item.isLiked),
         isBookmarked: Value(item.isBookmarked),
+        isDeleted: Value(item.isDeleted),
       ),
     );
   }
@@ -112,6 +115,7 @@ class SnippetDatabase {
             code: snippet.code,
             isLiked: snippet.isLiked,
             isBookmarked: snippet.isBookmarked,
+            isDeleted: snippet.isDeleted,
             tagsId: {},
           ),
         );

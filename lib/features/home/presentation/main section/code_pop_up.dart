@@ -147,6 +147,7 @@ Future<void> getCodePopUpMenu(BuildContext context) async {
                         curruntTags,
                         false,
                         false,
+                        false,
                       );
                       Navigator.of(context).pop();
 
@@ -232,6 +233,7 @@ void _addNewSnippet(
   Set<int> tags,
   bool isLiked,
   bool isBookmarked,
+  bool isDeleted,
 ) {
   final newSnippet = SnippetModel(
     id: DateTime.now().millisecondsSinceEpoch.toInt(),
@@ -240,6 +242,7 @@ void _addNewSnippet(
     tagsId: tags,
     isLiked: isLiked,
     isBookmarked: isBookmarked,
+    isDeleted: isDeleted,
   );
   ref.read(addNewSnippet(newSnippet));
 }

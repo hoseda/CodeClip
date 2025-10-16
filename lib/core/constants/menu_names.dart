@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:snippet_code/core/constants/colors.dart';
+import 'package:snippet_code/features/home/model/menu_item_model.dart';
 
 final leftSide = [
-  {"title": "All Snippets", "icon": Icon(Icons.code_rounded, color: iconbg)},
+  {"model": ItemModel.all, "title": "All Snippets", "icon": Icons.code_rounded},
   {
+    "model": ItemModel.bookmark,
     "title": "Bookmark",
-    "icon": Icon(Icons.bookmark_border_rounded, color: iconbg),
+    "icon": Icons.bookmark_border_rounded,
   },
   {
+    "model": ItemModel.like,
     "title": "Favorite",
-    "icon": Icon(Icons.favorite_outline_rounded, color: iconbg),
+    "icon": Icons.favorite_outline_rounded,
   },
-  {"title": "Trash", "icon": Icon(Icons.delete_outline_rounded, color: iconbg)},
+  {
+    "model": ItemModel.trash,
+    "title": "Trash",
+    "icon": Icons.delete_outline_rounded,
+  },
 ];

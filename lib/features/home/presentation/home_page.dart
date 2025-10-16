@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/home/model/menu_item_model.dart';
 import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
 import 'package:snippet_code/features/home/presentation/snippet%20section/snippet_section.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag.dart';
 import 'package:snippet_code/features/home/presentation/tag%20section/generate_tag_popup_menu.dart';
 import 'package:snippet_code/features/home/presentation/item%20section/item_list.dart';
+import 'package:snippet_code/features/home/repositories/item%20section/item_secrion_repo.dart';
 import 'package:snippet_code/features/home/repositories/main_section/fetch_and_send_tags_provider.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/generating_tag_providers.dart';
 
@@ -74,21 +76,34 @@ class _HomePageState extends ConsumerState<HomePage> {
                           // const SizedBox(height: 20),
                           ...List.generate(4, (index) {
                             final shadow = leftSide;
+                            final selected = ref.watch(
+                              isMenuItemSeleted(
+                                shadow[index]["model"] as ItemModel,
+                              ),
+                            );
+                            final itemModel = MenuItemModel(
+                              model: shadow[index]["model"] as ItemModel,
+                              name: shadow[index]["title"] as String,
+                              icon: shadow[index]["icon"] as IconData,
+                              isSelected: selected,
+                            );
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: HoverButton(
-                                onpressed: () {},
+                                onpressed: () {
+                                  ref
+                                      .read(
+                                        selectedMenuItemStateProvider.notifier,
+                                      )
+                                      .state = itemModel.model;
+                                },
                                 hoverColor: button,
-                                child: itemList(
-                                  shadow[index]["title"] as String,
-                                  shadow[index]["icon"] as Widget,
-                                ),
+                                child: menuListItem(itemModel),
                               ),
                             );
                           }),
                           Divider(color: button),
                           Row(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(

@@ -18,6 +18,7 @@ class SnippetTable extends Table {
   TextColumn get code => text()();
   BoolColumn get isLiked => boolean()();
   BoolColumn get isBookmarked => boolean()();
+  BoolColumn get isDeleted => boolean()();
 }
 
 class SnippetTagTable extends Table {
