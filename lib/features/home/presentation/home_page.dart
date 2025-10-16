@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hovering/hovering.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/core/constants/menu_names.dart';
+import 'package:snippet_code/features/editor/code_editor.dart';
 import 'package:snippet_code/features/home/model/menu_item_model.dart';
 import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
 import 'package:snippet_code/features/home/presentation/snippet%20section/snippet_section.dart';
@@ -260,7 +261,36 @@ class _HomePageState extends ConsumerState<HomePage> {
                       flex: 3,
                       child: Column(
                         children: [
-                          // Expanded(child: Container(color: Colors.blue)),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Code Editor",
+                                  style: TextStyle(
+                                    color: iconbg,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.settings_rounded,
+                                    color: iconbg,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(child: CodeEditor()),
+                          ),
                         ],
                       ),
                     ),
