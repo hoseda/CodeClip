@@ -19,8 +19,7 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
   @override
   void initState() {
     super.initState();
-    final source = "def fib(): \n\t pass ";
-    _codeController = CodeController(text: source, language: dart);
+    _codeController = CodeController(text: "", language: dart);
   }
 
   @override
@@ -32,22 +31,25 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
   @override
   Widget build(BuildContext context) {
     final isEnaled = ref.watch(isCodeEditorEnabled);
+    final code = ref.watch(codeEditorCodeHolder);
+    _codeController!.text = code;
     return CodeTheme(
       data: CodeThemeData(styles: vs2015Theme),
       child: CodeField(
         controller: _codeController!,
+        readOnly: !isEnaled,
         background: backgound,
         cursorColor: iconbg,
         enabled: isEnaled,
         textSelectionTheme: TextSelectionThemeData(selectionColor: button),
         textStyle: TextStyle(fontFamily: 'SourceCode', color: iconbg),
+        onChanged: (code) {
+          ref.read(codeEditorCodeHolder.notifier).state = code;
+        },
       ),
     );
   }
 }
 
 
-//TODO : code editor should be enabled only when clicked on a snippet 
-//TODO : when clicking on snippet its code will display on code editor
 //TODO : the default theme of code can be change using setting button
-//TODO : put a save code button above + button

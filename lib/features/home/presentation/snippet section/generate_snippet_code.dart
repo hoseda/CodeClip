@@ -8,10 +8,12 @@ import 'package:snippet_code/features/home/model/menu_item_model.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/item%20section/item_secrion_repo.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
   final allTags = ref.watch(tagListStreamProvider);
   final mode = ref.watch(selectedMenuItemStateProvider);
+  final isSnippetSelected = ref.watch(tappedSnippetStateProvider);
   return allTags.when(
     data: (data) {
       final filteredTags =
@@ -68,76 +70,89 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
                 ),
         child: GestureDetector(
           onTap: () {
+            ref.read(tappedSnippetStateProvider.notifier).state = snippet;
             ref.read(isCodeEditorEnabled.notifier).state = true;
+            ref.read(codeEditorCodeHolder.notifier).state = snippet.code;
           },
-          child: ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(snippet.name, style: TextStyle(color: iconbg)),
-                const Spacer(),
-                IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (child, animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child:
-                        snippet.isLiked
-                            ? Icon(
-                              Icons.favorite_rounded,
-                              color: Colors.redAccent,
-                            )
-                            : Icon(
-                              Icons.favorite_border_rounded,
-                              color: iconbg,
-                            ),
-                  ),
-
-                  onPressed:
-                      mode != ItemModel.trash
-                          ? () {
-                            _toggleFavoriteButton(ref, snippet);
-                          }
-                          : null,
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (child, animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child:
-                        snippet.isBookmarked
-                            ? Icon(
-                              Icons.bookmarks_rounded,
-                              color: Colors.blueAccent,
-                            )
-                            : Icon(
-                              Icons.bookmark_border_rounded,
-                              color: iconbg,
-                            ),
-                  ),
-
-                  onPressed:
-                      mode != ItemModel.trash
-                          ? () {
-                            _toggleBookMarkButton(ref, snippet);
-                          }
-                          : null,
-                ),
-              ],
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            decoration: BoxDecoration(
+              border:
+                  isSnippetSelected != null &&
+                          isSnippetSelected.id == snippet.id
+                      ? Border(left: BorderSide(color: iconbg, width: 3))
+                      : null,
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(12)),
             ),
-            subtitle: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children:
-                    filteredTags
-                        .map((t) => generateTagForSnippetCode(t))
-                        .toList(),
+            child: ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(snippet.name, style: TextStyle(color: iconbg)),
+                  const Spacer(),
+                  IconButton(
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child:
+                          snippet.isLiked
+                              ? Icon(
+                                Icons.favorite_rounded,
+                                color: Colors.redAccent,
+                              )
+                              : Icon(
+                                Icons.favorite_border_rounded,
+                                color: iconbg,
+                              ),
+                    ),
+
+                    onPressed:
+                        mode != ItemModel.trash
+                            ? () {
+                              _toggleFavoriteButton(ref, snippet);
+                            }
+                            : null,
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child:
+                          snippet.isBookmarked
+                              ? Icon(
+                                Icons.bookmarks_rounded,
+                                color: Colors.blueAccent,
+                              )
+                              : Icon(
+                                Icons.bookmark_border_rounded,
+                                color: iconbg,
+                              ),
+                    ),
+
+                    onPressed:
+                        mode != ItemModel.trash
+                            ? () {
+                              _toggleBookMarkButton(ref, snippet);
+                            }
+                            : null,
+                  ),
+                ],
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children:
+                      filteredTags
+                          .map((t) => generateTagForSnippetCode(t))
+                          .toList(),
+                ),
               ),
             ),
           ),

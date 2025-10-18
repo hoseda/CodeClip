@@ -9,3 +9,5 @@ extension SnippetListTools on List<SnippetModel> {
     return newList;
   }
 }
+
+final tappedSnippetStateProvider = StateProvider<SnippetModel?>((ref) => null);
