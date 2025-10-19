@@ -6,6 +6,7 @@ import 'package:snippet_code/core/constants/menu_names.dart';
 import 'package:snippet_code/features/database/database_provider.dart';
 import 'package:snippet_code/features/editor/code_editor.dart';
 import 'package:snippet_code/features/editor/presentation/code_editor_settings.dart';
+import 'package:snippet_code/features/editor/presentation/theme_dropdown_menu.dart';
 import 'package:snippet_code/features/editor/repository/code_editor_providers.dart';
 import 'package:snippet_code/features/home/model/menu_item_model.dart';
 import 'package:snippet_code/features/home/presentation/main%20section/code_pop_up.dart';
@@ -34,6 +35,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final selectedSnippet = ref.watch(tappedSnippetStateProvider);
+
     return Scaffold(
       backgroundColor: backgound,
       floatingActionButton: FloatingActionButton(
@@ -284,13 +286,24 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ),
                                 ),
                                 const Spacer(),
+                                selectedSnippet != null &&
+                                        selectedSnippet.isDeleted == false
+                                    ? themeDropDownMenu(ref)
+                                    : Center(),
+                                const SizedBox(width: 8),
                                 IconButton(
-                                  onPressed: () {
-                                    final code = ref.read(codeEditorCodeHolder);
-                                    final newSnippet = selectedSnippet!
-                                        .copyWith(code: code);
-                                    ref.read(updateSnippet(newSnippet));
-                                  },
+                                  onPressed:
+                                      selectedSnippet != null &&
+                                              selectedSnippet.isDeleted == false
+                                          ? () {
+                                            final code = ref.read(
+                                              codeEditorCodeHolder,
+                                            );
+                                            final newSnippet = selectedSnippet
+                                                .copyWith(code: code);
+                                            ref.read(updateSnippet(newSnippet));
+                                          }
+                                          : null,
                                   icon: Icon(
                                     Icons.download_rounded,
                                     color: iconbg,
@@ -298,9 +311,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 ),
                                 const SizedBox(width: 8),
                                 IconButton(
-                                  onPressed: () {
-                                    codeEditorSettings(context);
-                                  },
+                                  onPressed:
+                                      selectedSnippet != null &&
+                                              selectedSnippet.isDeleted == false
+                                          ? () {
+                                            codeEditorSettings(context);
+                                          }
+                                          : null,
                                   icon: Icon(
                                     Icons.settings_rounded,
                                     color: iconbg,

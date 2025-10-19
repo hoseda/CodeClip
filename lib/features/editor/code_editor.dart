@@ -19,7 +19,7 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
   @override
   void initState() {
     super.initState();
-    _codeController = CodeController(text: "", language: dart);
+    _codeController = ref.read(codeEditorController);
   }
 
   @override
@@ -32,7 +32,10 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
   Widget build(BuildContext context) {
     final isEnaled = ref.watch(isCodeEditorEnabled);
     final code = ref.watch(codeEditorCodeHolder);
+    final mode = ref.read(codeThemeModelCodeEditorStateProvider);
     _codeController!.text = code;
+    _codeController!.language = mode;
+
     return CodeTheme(
       data: CodeThemeData(styles: vs2015Theme),
       child: CodeField(
@@ -40,7 +43,6 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
         readOnly: !isEnaled,
         background: backgound,
         cursorColor: iconbg,
-        enabled: isEnaled,
         textSelectionTheme: TextSelectionThemeData(selectionColor: button),
         textStyle: TextStyle(fontFamily: 'SourceCode', color: iconbg),
         onChanged: (code) {
@@ -50,6 +52,3 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
     );
   }
 }
-
-
-//TODO : the default theme of code can be change using setting button

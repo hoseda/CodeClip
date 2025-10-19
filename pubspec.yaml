@@ -49,6 +49,7 @@ dependencies:
   drift_flutter: ^0.2.4
   path_provider: ^2.1.5
   path:
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:

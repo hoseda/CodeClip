@@ -21,15 +21,14 @@ Future<void> codeEditorSettings(BuildContext context) async {
                 vertical: 25,
                 horizontal: 15,
               ),
-              content: Container(
+              content: SizedBox(
                 width: 300,
                 height: 100,
-                child: Row(
-                  children: [
-                    Text("Code Theme"),
-                    //TODO : add dropdown menu for list of languages theme.
-                    // DropdownMenu(dropdownMenuEntries: dropdownMenuEntries)
-                  ],
+                child: Center(
+                  child: Text(
+                    "NOT IMPLEMENTED YET.",
+                    style: TextStyle(color: iconbg),
+                  ),
                 ),
               ),
               actions: [
