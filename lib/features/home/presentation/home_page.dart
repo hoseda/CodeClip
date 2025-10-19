@@ -299,8 +299,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                                             final code = ref.read(
                                               codeEditorCodeHolder,
                                             );
+                                            final lang = ref.read(
+                                              codeThemeNameCodeEditorStateProvider,
+                                            );
                                             final newSnippet = selectedSnippet
-                                                .copyWith(code: code);
+                                                .copyWith(
+                                                  code: code,
+                                                  lang: lang,
+                                                );
                                             ref.read(updateSnippet(newSnippet));
                                           }
                                           : null,

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:highlight/languages/dart.dart';
 import 'package:snippet_code/core/constants/colors.dart';
 import 'package:snippet_code/features/editor/repository/code_editor_providers.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 
 class CodeEditor extends ConsumerStatefulWidget {
   const CodeEditor({super.key});
@@ -19,7 +19,9 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
   @override
   void initState() {
     super.initState();
-    _codeController = ref.read(codeEditorController);
+    final code = ref.read(codeEditorCodeHolder);
+    final mode = ref.read(codeThemeModelCodeEditorStateProvider);
+    _codeController = CodeController(text: code, language: mode);
   }
 
   @override
@@ -30,17 +32,25 @@ class _CodeEditorState extends ConsumerState<CodeEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final isEnaled = ref.watch(isCodeEditorEnabled);
     final code = ref.watch(codeEditorCodeHolder);
-    final mode = ref.read(codeThemeModelCodeEditorStateProvider);
-    _codeController!.text = code;
-    _codeController!.language = mode;
+    final mode = ref.watch(codeThemeModelCodeEditorStateProvider);
+    final isEnaled = ref.watch(isCodeEditorEnabled);
+
+    if (_codeController?.text != code) {
+      _codeController?.text = code;
+      _codeController?.selection = TextSelection.collapsed(offset: code.length);
+    }
+
+    if (_codeController?.language != mode) {
+      _codeController?.language = mode;
+    }
 
     return CodeTheme(
       data: CodeThemeData(styles: vs2015Theme),
       child: CodeField(
         controller: _codeController!,
-        readOnly: !isEnaled,
+        readOnly: ref.watch(tappedSnippetStateProvider)?.isDeleted ?? false,
+        enabled: isEnaled,
         background: backgound,
         cursorColor: iconbg,
         textSelectionTheme: TextSelectionThemeData(selectionColor: button),

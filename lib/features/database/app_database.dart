@@ -16,6 +16,7 @@ class SnippetTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text().withLength(min: 1, max: 100)();
   TextColumn get code => text()();
+  TextColumn get lang => text().nullable()();
   BoolColumn get isLiked => boolean()();
   BoolColumn get isBookmarked => boolean()();
   BoolColumn get isDeleted => boolean()();

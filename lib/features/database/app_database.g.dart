@@ -299,6 +299,15 @@ class $SnippetTableTable extends SnippetTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _langMeta = const VerificationMeta('lang');
+  @override
+  late final GeneratedColumn<String> lang = GeneratedColumn<String>(
+    'lang',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _isLikedMeta = const VerificationMeta(
     'isLiked',
   );
@@ -346,6 +355,7 @@ class $SnippetTableTable extends SnippetTable
     id,
     title,
     code,
+    lang,
     isLiked,
     isBookmarked,
     isDeleted,
@@ -380,6 +390,12 @@ class $SnippetTableTable extends SnippetTable
       );
     } else if (isInserting) {
       context.missing(_codeMeta);
+    }
+    if (data.containsKey('lang')) {
+      context.handle(
+        _langMeta,
+        lang.isAcceptableOrUnknown(data['lang']!, _langMeta),
+      );
     }
     if (data.containsKey('is_liked')) {
       context.handle(
@@ -432,6 +448,10 @@ class $SnippetTableTable extends SnippetTable
             DriftSqlType.string,
             data['${effectivePrefix}code'],
           )!,
+      lang: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lang'],
+      ),
       isLiked:
           attachedDatabase.typeMapping.read(
             DriftSqlType.bool,
@@ -461,6 +481,7 @@ class SnippetTableData extends DataClass
   final int id;
   final String title;
   final String code;
+  final String? lang;
   final bool isLiked;
   final bool isBookmarked;
   final bool isDeleted;
@@ -468,6 +489,7 @@ class SnippetTableData extends DataClass
     required this.id,
     required this.title,
     required this.code,
+    this.lang,
     required this.isLiked,
     required this.isBookmarked,
     required this.isDeleted,
@@ -478,6 +500,9 @@ class SnippetTableData extends DataClass
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['code'] = Variable<String>(code);
+    if (!nullToAbsent || lang != null) {
+      map['lang'] = Variable<String>(lang);
+    }
     map['is_liked'] = Variable<bool>(isLiked);
     map['is_bookmarked'] = Variable<bool>(isBookmarked);
     map['is_deleted'] = Variable<bool>(isDeleted);
@@ -489,6 +514,7 @@ class SnippetTableData extends DataClass
       id: Value(id),
       title: Value(title),
       code: Value(code),
+      lang: lang == null && nullToAbsent ? const Value.absent() : Value(lang),
       isLiked: Value(isLiked),
       isBookmarked: Value(isBookmarked),
       isDeleted: Value(isDeleted),
@@ -504,6 +530,7 @@ class SnippetTableData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       code: serializer.fromJson<String>(json['code']),
+      lang: serializer.fromJson<String?>(json['lang']),
       isLiked: serializer.fromJson<bool>(json['isLiked']),
       isBookmarked: serializer.fromJson<bool>(json['isBookmarked']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
@@ -516,6 +543,7 @@ class SnippetTableData extends DataClass
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'code': serializer.toJson<String>(code),
+      'lang': serializer.toJson<String?>(lang),
       'isLiked': serializer.toJson<bool>(isLiked),
       'isBookmarked': serializer.toJson<bool>(isBookmarked),
       'isDeleted': serializer.toJson<bool>(isDeleted),
@@ -526,6 +554,7 @@ class SnippetTableData extends DataClass
     int? id,
     String? title,
     String? code,
+    Value<String?> lang = const Value.absent(),
     bool? isLiked,
     bool? isBookmarked,
     bool? isDeleted,
@@ -533,6 +562,7 @@ class SnippetTableData extends DataClass
     id: id ?? this.id,
     title: title ?? this.title,
     code: code ?? this.code,
+    lang: lang.present ? lang.value : this.lang,
     isLiked: isLiked ?? this.isLiked,
     isBookmarked: isBookmarked ?? this.isBookmarked,
     isDeleted: isDeleted ?? this.isDeleted,
@@ -542,6 +572,7 @@ class SnippetTableData extends DataClass
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       code: data.code.present ? data.code.value : this.code,
+      lang: data.lang.present ? data.lang.value : this.lang,
       isLiked: data.isLiked.present ? data.isLiked.value : this.isLiked,
       isBookmarked:
           data.isBookmarked.present
@@ -557,6 +588,7 @@ class SnippetTableData extends DataClass
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('code: $code, ')
+          ..write('lang: $lang, ')
           ..write('isLiked: $isLiked, ')
           ..write('isBookmarked: $isBookmarked, ')
           ..write('isDeleted: $isDeleted')
@@ -566,7 +598,7 @@ class SnippetTableData extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, title, code, isLiked, isBookmarked, isDeleted);
+      Object.hash(id, title, code, lang, isLiked, isBookmarked, isDeleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -574,6 +606,7 @@ class SnippetTableData extends DataClass
           other.id == this.id &&
           other.title == this.title &&
           other.code == this.code &&
+          other.lang == this.lang &&
           other.isLiked == this.isLiked &&
           other.isBookmarked == this.isBookmarked &&
           other.isDeleted == this.isDeleted);
@@ -583,6 +616,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> code;
+  final Value<String?> lang;
   final Value<bool> isLiked;
   final Value<bool> isBookmarked;
   final Value<bool> isDeleted;
@@ -590,6 +624,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.code = const Value.absent(),
+    this.lang = const Value.absent(),
     this.isLiked = const Value.absent(),
     this.isBookmarked = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -598,6 +633,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     this.id = const Value.absent(),
     required String title,
     required String code,
+    this.lang = const Value.absent(),
     required bool isLiked,
     required bool isBookmarked,
     required bool isDeleted,
@@ -610,6 +646,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? code,
+    Expression<String>? lang,
     Expression<bool>? isLiked,
     Expression<bool>? isBookmarked,
     Expression<bool>? isDeleted,
@@ -618,6 +655,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (code != null) 'code': code,
+      if (lang != null) 'lang': lang,
       if (isLiked != null) 'is_liked': isLiked,
       if (isBookmarked != null) 'is_bookmarked': isBookmarked,
       if (isDeleted != null) 'is_deleted': isDeleted,
@@ -628,6 +666,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     Value<int>? id,
     Value<String>? title,
     Value<String>? code,
+    Value<String?>? lang,
     Value<bool>? isLiked,
     Value<bool>? isBookmarked,
     Value<bool>? isDeleted,
@@ -636,6 +675,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
       id: id ?? this.id,
       title: title ?? this.title,
       code: code ?? this.code,
+      lang: lang ?? this.lang,
       isLiked: isLiked ?? this.isLiked,
       isBookmarked: isBookmarked ?? this.isBookmarked,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -653,6 +693,9 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
     }
     if (code.present) {
       map['code'] = Variable<String>(code.value);
+    }
+    if (lang.present) {
+      map['lang'] = Variable<String>(lang.value);
     }
     if (isLiked.present) {
       map['is_liked'] = Variable<bool>(isLiked.value);
@@ -672,6 +715,7 @@ class SnippetTableCompanion extends UpdateCompanion<SnippetTableData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('code: $code, ')
+          ..write('lang: $lang, ')
           ..write('isLiked: $isLiked, ')
           ..write('isBookmarked: $isBookmarked, ')
           ..write('isDeleted: $isDeleted')
@@ -1204,6 +1248,7 @@ typedef $$SnippetTableTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       required String code,
+      Value<String?> lang,
       required bool isLiked,
       required bool isBookmarked,
       required bool isDeleted,
@@ -1213,6 +1258,7 @@ typedef $$SnippetTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> title,
       Value<String> code,
+      Value<String?> lang,
       Value<bool> isLiked,
       Value<bool> isBookmarked,
       Value<bool> isDeleted,
@@ -1268,6 +1314,11 @@ class $$SnippetTableTableFilterComposer
 
   ColumnFilters<String> get code => $composableBuilder(
     column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lang => $composableBuilder(
+    column: $table.lang,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1336,6 +1387,11 @@ class $$SnippetTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get lang => $composableBuilder(
+    column: $table.lang,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isLiked => $composableBuilder(
     column: $table.isLiked,
     builder: (column) => ColumnOrderings(column),
@@ -1369,6 +1425,9 @@ class $$SnippetTableTableAnnotationComposer
 
   GeneratedColumn<String> get code =>
       $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get lang =>
+      $composableBuilder(column: $table.lang, builder: (column) => column);
 
   GeneratedColumn<bool> get isLiked =>
       $composableBuilder(column: $table.isLiked, builder: (column) => column);
@@ -1439,6 +1498,7 @@ class $$SnippetTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<String> code = const Value.absent(),
+                Value<String?> lang = const Value.absent(),
                 Value<bool> isLiked = const Value.absent(),
                 Value<bool> isBookmarked = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -1446,6 +1506,7 @@ class $$SnippetTableTableTableManager
                 id: id,
                 title: title,
                 code: code,
+                lang: lang,
                 isLiked: isLiked,
                 isBookmarked: isBookmarked,
                 isDeleted: isDeleted,
@@ -1455,6 +1516,7 @@ class $$SnippetTableTableTableManager
                 Value<int> id = const Value.absent(),
                 required String title,
                 required String code,
+                Value<String?> lang = const Value.absent(),
                 required bool isLiked,
                 required bool isBookmarked,
                 required bool isDeleted,
@@ -1462,6 +1524,7 @@ class $$SnippetTableTableTableManager
                 id: id,
                 title: title,
                 code: code,
+                lang: lang,
                 isLiked: isLiked,
                 isBookmarked: isBookmarked,
                 isDeleted: isDeleted,

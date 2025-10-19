@@ -10,7 +10,6 @@ void main() async {
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowTitle("Code Clip");
     setWindowMinSize(const Size(1280, 720));
-    setWindowMaxSize(const Size(1280, 900));
   }
   runApp(ProviderScope(child: const App()));
 }

@@ -21,6 +21,7 @@ class SnippetDatabase {
             SnippetTableCompanion(
               title: Value(item.name),
               code: Value(item.code),
+              lang: Value(item.lang),
               isLiked: Value(item.isLiked),
               isBookmarked: Value(item.isBookmarked),
               isDeleted: Value(item.isDeleted),
@@ -69,6 +70,7 @@ class SnippetDatabase {
         id: t.id,
         name: t.title,
         code: t.code,
+        lang: t.code,
         isLiked: t.isLiked,
         isBookmarked: t.isBookmarked,
         isDeleted: t.isDeleted,
@@ -82,6 +84,7 @@ class SnippetDatabase {
       SnippetTableCompanion(
         title: Value(item.name),
         code: Value(item.code),
+        lang: Value(item.lang),
         isLiked: Value(item.isLiked),
         isBookmarked: Value(item.isBookmarked),
         isDeleted: Value(item.isDeleted),
@@ -121,6 +124,7 @@ class SnippetDatabase {
             id: snippet.id,
             name: snippet.title,
             code: snippet.code,
+            lang: snippet.lang ?? "dart",
             isLiked: snippet.isLiked,
             isBookmarked: snippet.isBookmarked,
             isDeleted: snippet.isDeleted,

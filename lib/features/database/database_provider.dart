@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snippet_code/features/database/app_database.dart';
+import 'package:snippet_code/features/editor/repository/code_editor_providers.dart';
 import 'package:snippet_code/features/home/model/snippet_model.dart';
 import 'package:snippet_code/features/home/model/tag_model.dart';
 import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_db_repo.dart';
+import 'package:snippet_code/features/home/repositories/snippet%20section/snippet_section_providers.dart';
 import 'package:snippet_code/features/home/repositories/tag_section/tag_db_repo.dart';
 
 final dataBaseProvider = StateProvider<AppDatabase>((ref) {
@@ -67,14 +69,32 @@ final addNewSnippet = Provider.family<void, SnippetModel>((ref, item) {
   db.addNewItem(item, item.tagsId);
 });
 
-final softDeleteSnippet = Provider.family<void, SnippetModel>((ref, item) {
+final softDeleteSnippet = FutureProvider.family<void, SnippetModel>((
+  ref,
+  item,
+) async {
   final db = ref.watch(snippetDatabaseProvider);
-  db.softDeleteItem(item);
+  await db.softDeleteItem(item);
+
+  final selected = ref.read(tappedSnippetStateProvider);
+  if (selected?.id == item.id) {
+    ref.read(tappedSnippetStateProvider.notifier).state = null;
+    ref.read(codeEditorController)!.clear();
+  }
 });
 
-final deleteSnippet = Provider.family<void, SnippetModel>((ref, item) {
+final deleteSnippet = FutureProvider.family<void, SnippetModel>((
+  ref,
+  item,
+) async {
   final db = ref.watch(snippetDatabaseProvider);
-  db.deleteItem(item);
+  await db.deleteItem(item);
+
+  final selected = ref.read(tappedSnippetStateProvider);
+  if (selected?.id == item.id) {
+    ref.read(tappedSnippetStateProvider.notifier).state = null;
+    ref.read(codeEditorController)!.clear();
+  }
 });
 
 final updateSnippet = Provider.family<void, SnippetModel>((ref, item) {

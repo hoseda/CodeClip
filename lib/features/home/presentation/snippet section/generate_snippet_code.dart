@@ -30,10 +30,6 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
             if (direction == DismissDirection.endToStart) {
               ref.read(softDeleteSnippet(snippet));
               ref.read(tappedSnippetStateProvider.notifier).state = null;
-              final cont = ref.read(codeEditorController);
-              if (cont != null) {
-                cont.clearComposing();
-              }
             }
           } else {
             if (direction == DismissDirection.startToEnd) {
@@ -76,13 +72,7 @@ Widget generateSnippetCode(WidgetRef ref, SnippetModel snippet) {
         child: GestureDetector(
           onTap: () {
             ref.read(tappedSnippetStateProvider.notifier).state = snippet;
-            if (snippet.isDeleted == false) {
-              ref.read(isCodeEditorEnabled.notifier).state = true;
-              ref.read(codeEditorCodeHolder.notifier).state = snippet.code;
-            } else {
-              ref.read(isCodeEditorEnabled.notifier).state = false;
-              ref.read(codeEditorCodeHolder.notifier).state = snippet.code;
-            }
+            ref.read(isCodeEditorEnabled.notifier).state = true;
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),

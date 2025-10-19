@@ -4,6 +4,7 @@ class SnippetModel {
   final int id;
   final String name;
   final String code;
+  final String lang;
   final Set<int> tagsId;
   final bool isLiked;
   final bool isBookmarked;
@@ -13,6 +14,7 @@ class SnippetModel {
     required this.id,
     required this.name,
     required this.code,
+    this.lang = "dart",
     this.tagsId = const {},
     this.isLiked = false,
     this.isBookmarked = false,
@@ -28,6 +30,7 @@ class SnippetModel {
     int? id,
     String? name,
     String? code,
+    String? lang,
     bool? isLiked,
     bool? isBookmarked,
     bool? isDeleted,
@@ -36,6 +39,7 @@ class SnippetModel {
       id: id ?? this.id,
       name: name ?? this.name,
       code: code ?? this.code,
+      lang: lang ?? this.lang,
       isLiked: isLiked ?? this.isLiked,
       isBookmarked: isBookmarked ?? this.isBookmarked,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -47,6 +51,7 @@ class SnippetModel {
       'id': id,
       'name': name,
       'code': code,
+      'lang': lang,
       'isLiked': isLiked,
       'isBookmarked': isBookmarked,
     };
@@ -57,6 +62,7 @@ class SnippetModel {
       id: (map['id'] ?? 0) as int,
       name: (map['title'] ?? '') as String,
       code: (map['code'] ?? '') as String,
+      lang: (map['lang'] ?? '') as String,
       isLiked: (map['isLiked'] ?? false) as bool,
       isBookmarked: (map['isBookmarked'] ?? false) as bool,
       isDeleted: (map['isDeleted'] ?? false) as bool,
