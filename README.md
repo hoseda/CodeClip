@@ -1,16 +1,13 @@
-# snippet_code
+# Snippet Code 💡
 
-A new Flutter project.
+A modern cross-platform snippet manager built with Flutter.  
+Supports Linux for now, featuring a sleek UI and offline storage.
 
-## Getting Started
+## 🖥️ Platforms
+- ✅ Linux (.deb)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Installation
+### Linux
+Download the `.deb` file from [Releases](https://github.com/hoseda/snippet_code/releases):
+```bash
+sudo dpkg -i snippet_code.deb

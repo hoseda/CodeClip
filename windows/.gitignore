@@ -1,5 +1,6 @@
 flutter/ephemeral/
-
+dist/
+devtools_options.yaml
 # Visual Studio user-specific files.
 *.suo
 *.user
@@ -15,3 +16,25 @@ x86/
 *.[Cc]ache
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.idea/
+.vscode/
+android/app/debug
+android/app/profile
+android/app/release
+
+# Distribution output
+dist/
+*.deb
+*.exe
+*.zip
+*.tar.gz
+
+# OS specific
+.DS_Store
+Thumbs.db
