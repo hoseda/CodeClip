@@ -8,6 +8,7 @@ Supports Linux for now, featuring a sleek UI and offline storage.
 
 ## 🚀 Installation
 ### Linux
-Download the `.deb` file from [Releases](https://github.com/hoseda/snippet_code/releases):
+Download the `.deb` file from [Releases](https://github.com/hoseda/CodeClip/releases):
 ```bash
 sudo dpkg -i snippet_code.deb
+
